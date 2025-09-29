@@ -31,6 +31,9 @@
     <!-- ===================== Part 1 ===================== -->
     <section id="part1">
       <h2>Part 1 — Perspective vs. Approx. Orthographic</h2>
+      <p class="summary">
+        Two photos of the same scene are captured to compare perspective projection and orthographic projection.
+      </p>
       <div class="grid">
         <figure class="card">
           <img src="./media/part1/p1_perspective.png" alt="Perspective projection">
@@ -49,6 +52,10 @@
     <!-- ===================== Part 2(a) ===================== -->
     <section id="part2a">
       <h2>Part 2(a) — Histogram Equalization (Provided Images)</h2>
+
+      <p class="summary">
+        Histogram equalization is applied to three low-contrast grayscale images.
+      </p>
 
       <!-- Image 1 -->
       <div class="grid four">
@@ -81,11 +88,14 @@
     <!-- ===================== Part 2(b) ===================== -->
     <section id="part2b">
       <h2>Part 2(b) — Equalization on My Photo</h2>
+      <p class="summary">
+        Histogram equalization is applied to one of my own photos.
+      </p>
       <div class="grid four">
-        <figure class="card"><img src="./media/part2b_outputs/bbq_orig.png" alt=""><figcaption>Original</figcaption></figure>
-        <figure class="card"><img src="./media/part2b_outputs/bbq_orig_hist.png" alt=""><figcaption>Original Hist</figcaption></figure>
-        <figure class="card"><img src="./media/part2b_outputs/bbq_eq.png" alt=""><figcaption>Equalized</figcaption></figure>
-        <figure class="card"><img src="./media/part2b_outputs/bbq_eq_hist.png" alt=""><figcaption>Eq. Hist</figcaption></figure>
+        <figure class="card"><img src="./media/part2b_outputs/selfimg_orig.png" alt=""><figcaption>Original</figcaption></figure>
+        <figure class="card"><img src="./media/part2b_outputs/selfimg_orig_hist.png" alt=""><figcaption>Original Hist</figcaption></figure>
+        <figure class="card"><img src="./media/part2b_outputs/selfimg_eq.png" alt=""><figcaption>Equalized</figcaption></figure>
+        <figure class="card"><img src="./media/part2b_outputs/selfimg_eq_hist.png" alt=""><figcaption>Eq. Hist</figcaption></figure>
       </div>
       <p class="discussion">
         While working on this section I originally had a hard time finding an image with poor contrast (as most times I would end up deleting those pictures). The picture I used was from a small barbecue I had with a few friends where some of the shadows in the picture appeared to be off. 
@@ -96,84 +106,234 @@
     <!-- ===================== Part 2(c) ===================== -->
     <section id="part2c">
       <h2>Part 2(c) — Histogram Matching</h2>
+      <p class="summary">
+        Histogram matching is applied to three low-contrast test images so their distributions resemble that of the target image.
+      </p>
+
+      <!-- Target -->
       <div class="grid four">
-        <figure class="card"><img src="./media/part2c_outputs/target.png" alt=""><figcaption>Target</figcaption></figure>
-        <figure class="card"><img src="./media/part2c_outputs/target_hist.png" alt=""><figcaption>Target Hist</figcaption></figure>
+        <figure class="card"><img src="./media/part2c_outputs/target.png" alt=""><figcaption>Target Image</figcaption></figure>
+        <figure class="card"><img src="./media/part2c_outputs/target_hist.png" alt=""><figcaption>Target Histogram</figcaption></figure>
+      </div>
+
+      <!-- Source 1 -->
+      <h3>Source 1</h3>
+      <div class="grid four">
+        <figure class="card"><img src="./media/part2c_outputs/src1_orig.png" alt=""><figcaption>Src1 Original</figcaption></figure>
+        <figure class="card"><img src="./media/part2c_outputs/src1_orig_hist.png" alt=""><figcaption>Src1 Orig. Hist</figcaption></figure>
         <figure class="card"><img src="./media/part2c_outputs/src1_matched.png" alt=""><figcaption>Src1 Matched</figcaption></figure>
         <figure class="card"><img src="./media/part2c_outputs/src1_matched_hist.png" alt=""><figcaption>Src1 Matched Hist</figcaption></figure>
       </div>
-      <!-- Optional: add a short summary for matching -->
-      <!-- <p class="discussion">Brief note on how matching mapped source quantiles to target CDF and the visual effect.</p> -->
+
+      <!-- Source 2 -->
+      <h3>Source 2</h3>
+      <div class="grid four">
+        <figure class="card"><img src="./media/part2c_outputs/src2_orig.png" alt=""><figcaption>Src2 Original</figcaption></figure>
+        <figure class="card"><img src="./media/part2c_outputs/src2_orig_hist.png" alt=""><figcaption>Src2 Orig. Hist</figcaption></figure>
+        <figure class="card"><img src="./media/part2c_outputs/src2_matched.png" alt=""><figcaption>Src2 Matched</figcaption></figure>
+        <figure class="card"><img src="./media/part2c_outputs/src2_matched_hist.png" alt=""><figcaption>Src2 Matched Hist</figcaption></figure>
+      </div>
+
+      <!-- Source 3 -->
+      <h3>Source 3</h3>
+      <div class="grid four">
+        <figure class="card"><img src="./media/part2c_outputs/src3_orig.png" alt=""><figcaption>Src3 Original</figcaption></figure>
+        <figure class="card"><img src="./media/part2c_outputs/src3_orig_hist.png" alt=""><figcaption>Src3 Orig. Hist</figcaption></figure>
+        <figure class="card"><img src="./media/part2c_outputs/src3_matched.png" alt=""><figcaption>Src3 Matched</figcaption></figure>
+        <figure class="card"><img src="./media/part2c_outputs/src3_matched_hist.png" alt=""><figcaption>Src3 Matched Hist</figcaption></figure>
+      </div>
+
+      <p class="discussion">
+        Matching aligns the histogram of each source with the target, redistributing intensities to mimic its tonal balance. 
+        This process visibly shifts the brightness/contrast in each case so that the overall look is closer to the target image.
+      </p>
     </section>
 
     <!-- ===================== Part 2(d) ===================== -->
     <section id="part2d">
-      <h2>Part 2(d) — DoG vs Gaussian→Derivative</h2>
+      <h2>Part 2(d) — DoG vs Gaussian → Derivative</h2>
+      <p class="summary">
+        Comparison of two edge detection methods — (1) Naive Gaussian Blur → Derivative, and (2) Direct Derivative of Gaussian (DoG).
+      </p>
       <p class="note">Both paths use the same operator; derivatives shown with symmetric rescale for ± visibility.</p>
+
+      <!-- Image 1 -->
+      <h3>Image 1</h3>
       <div class="grid four">
         <figure class="card"><img src="./media/part2d_outputs/img1_Ix_naive.png" alt=""><figcaption>Img1 Ix (Naive)</figcaption></figure>
         <figure class="card"><img src="./media/part2d_outputs/img1_Ix_dog.png" alt=""><figcaption>Img1 Ix (DoG)</figcaption></figure>
         <figure class="card"><img src="./media/part2d_outputs/img1_Iy_naive.png" alt=""><figcaption>Img1 Iy (Naive)</figcaption></figure>
         <figure class="card"><img src="./media/part2d_outputs/img1_Iy_dog.png" alt=""><figcaption>Img1 Iy (DoG)</figcaption></figure>
       </div>
+
+      <!-- Image 2 -->
+      <h3>Image 2</h3>
+      <div class="grid four">
+        <figure class="card"><img src="./media/part2d_outputs/img2_Ix_naive.png" alt=""><figcaption>Img2 Ix (Naive)</figcaption></figure>
+        <figure class="card"><img src="./media/part2d_outputs/img2_Ix_dog.png" alt=""><figcaption>Img2 Ix (DoG)</figcaption></figure>
+        <figure class="card"><img src="./media/part2d_outputs/img2_Iy_naive.png" alt=""><figcaption>Img2 Iy (Naive)</figcaption></figure>
+        <figure class="card"><img src="./media/part2d_outputs/img2_Iy_dog.png" alt=""><figcaption>Img2 Iy (DoG)</figcaption></figure>
+      </div>
+
+      <!-- Image 3 -->
+      <h3>Image 3</h3>
+      <div class="grid four">
+        <figure class="card"><img src="./media/part2d_outputs/img3_Ix_naive.png" alt=""><figcaption>Img3 Ix (Naive)</figcaption></figure>
+        <figure class="card"><img src="./media/part2d_outputs/img3_Ix_dog.png" alt=""><figcaption>Img3 Ix (DoG)</figcaption></figure>
+        <figure class="card"><img src="./media/part2d_outputs/img3_Iy_naive.png" alt=""><figcaption>Img3 Iy (Naive)</figcaption></figure>
+        <figure class="card"><img src="./media/part2d_outputs/img3_Iy_dog.png" alt=""><figcaption>Img3 Iy (DoG)</figcaption></figure>
+      </div>
+
       <p class="discussion">
-        Comparing the results of the naive two-step method and the direct derivative method shows that the outputs seemed to be extremely similar. Both approaches appear to highlight the same edges, confirming that they are mathematically equivalent. 
-        A small difference between the two seems to be that the edges from the DoG appear to be inverted when compared to the naive method. I don’t think this is caused from the mathematics, but is instead a result of the kernel in convolution and cross correlation being inverses of each other (essentially flipping the images). In a future implementation, I would handle this in the code so that they would appear completely identical in the output.
+        Comparing the results of the naive two-step method and the direct derivative method shows that the outputs are extremely similar. Both approaches highlight the same edges, confirming their mathematical equivalence. 
+        A small difference is that the edges from the DoG sometimes appear inverted relative to the naive method. This is not due to the math itself but is instead a result of convolution vs. cross-correlation kernels being inverses. In a future implementation, this could be handled so the outputs appear completely identical.
       </p>
     </section>
+
 
     <!-- ===================== Part 2(e) ===================== -->
     <section id="part2e">
       <h2>Part 2(e) — Unsharp Masking</h2>
+      <p class="summary">
+        Unsharp masking is used to sharpen images by extracting high-frequency details and blending them back in with varying weights (α).
+      </p>
+
+      <!-- CT Image -->
+      <h3>CT Image</h3>
       <div class="grid four">
         <figure class="card"><img src="./media/part2e_outputs/ct_orig.png" alt=""><figcaption>CT — Original</figcaption></figure>
-        <figure class="card"><img src="./media/part2e_outputs/ct_sharp_sigma1p3_alpha2.png" alt=""><figcaption>CT — Sharp (σ=1.3, α=2)</figcaption></figure>
-        <figure class="card"><img src="./media/part2e_outputs/moon_orig.png" alt=""><figcaption>Moon — Original</figcaption></figure>
-        <figure class="card"><img src="./media/part2e_outputs/moon_sharp_sigma1p3_alpha4.png" alt=""><figcaption>Moon — Sharp (σ=1.3, α=4)</figcaption></figure>
+        <figure class="card"><img src="./media/part2e_outputs/ct_blur_sigma1.3.png" alt=""><figcaption>CT — Blurred (σ=1.3)</figcaption></figure>
+        <figure class="card"><img src="./media/part2e_outputs/ct_high_sigma1.3.png" alt=""><figcaption>CT — Features being extracted</figcaption></figure>
       </div>
+      <div class="grid four">
+        <figure class="card"><img src="./media/part2e_outputs/ct_sharp_sigma1.3_alpha1.png" alt=""><figcaption>CT — Sharp (σ=1.3, α=1)</figcaption></figure>
+        <figure class="card"><img src="./media/part2e_outputs/ct_sharp_sigma1.3_alpha2.png" alt=""><figcaption>CT — Sharp (σ=1.3, α=2)</figcaption></figure>
+        <figure class="card"><img src="./media/part2e_outputs/ct_sharp_sigma1.3_alpha4.png" alt=""><figcaption>CT — Sharp (σ=1.3, α=4)</figcaption></figure>
+        <figure class="card"><img src="./media/part2e_outputs/ct_sharp_sigma1.3_alpha8.png" alt=""><figcaption>CT — Sharp (σ=1.3, α=8)</figcaption></figure>
+      </div>
+
+      <!-- Moon Image -->
+      <h3>Moon Image</h3>
+      <div class="grid four">
+        <figure class="card"><img src="./media/part2e_outputs/moon_orig.png" alt=""><figcaption>Moon — Original</figcaption></figure>
+        <figure class="card"><img src="./media/part2e_outputs/moon_blur_sigma1.3.png" alt=""><figcaption>Moon — Blurred (σ=1.3)</figcaption></figure>
+        <figure class="card"><img src="./media/part2e_outputs/moon_high_sigma1.3.png" alt=""><figcaption>Moon — Features being extracted</figcaption></figure>
+      </div>
+      <div class="grid four">
+        <figure class="card"><img src="./media/part2e_outputs/moon_sharp_sigma1.3_alpha1.png" alt=""><figcaption>Moon — Sharp (σ=1.3, α=1)</figcaption></figure>
+        <figure class="card"><img src="./media/part2e_outputs/moon_sharp_sigma1.3_alpha2.png" alt=""><figcaption>Moon — Sharp (σ=1.3, α=2)</figcaption></figure>
+        <figure class="card"><img src="./media/part2e_outputs/moon_sharp_sigma1.3_alpha4.png" alt=""><figcaption>Moon — Sharp (σ=1.3, α=4)</figcaption></figure>
+        <figure class="card"><img src="./media/part2e_outputs/moon_sharp_sigma1.3_alpha8.png" alt=""><figcaption>Moon — Sharp (σ=1.3, α=8)</figcaption></figure>
+      </div>
+
       <p class="discussion">
-        With a small alpha, the sharpening effect is very subtle as only a fraction of the high-frequency details that are extracted are added back. As this alpha increases, edges become more pronounced, causing the resulting image to be much sharper. However if alpha becomes too large, it can cause edges in the pictures to become too sharp or overly detailed as seen in the final test with the moon image.
+        With a small α, the sharpening effect is subtle as only a fraction of the extracted high-frequency details are added back.
+        As α increases, edges become more pronounced and the image appears sharper. However, very large α values amplify edges
+        and noise too much, producing over-sharpened or artifact-heavy results, especially visible in the moon image.
       </p>
     </section>
+
 
     <!-- ===================== Part 3 — Q1 ===================== -->
     <section id="part3-q1">
-      <h2>Part 3 — Question 1: PM Implementation & Parameter Study</h2>
+      <h2>Part 3 — Question 1: PM Implementation and Parameter Study</h2>
+      <p class="summary">
+        Implementation of Perona–Malik anisotropic diffusion using both exponential and reciprocal conductance functions, across different K values and iteration counts.
+      </p>
 
-      <h3>Exponential Conductance</h3>
+      <!-- Image 1 -->
+      <h3>Image 1 — Lena</h3>
+
+      <h4>Exponential Conductance</h4>
       <div class="grid four">
-        <figure class="card"><img src="./media/part3a_outputs/p3_img1_exp_k0p05_i5.png" alt=""><figcaption>Img1 Exp K=0.05, 5 iters</figcaption></figure>
-        <figure class="card"><img src="./media/part3a_outputs/p3_img1_exp_k0p1_i15.png" alt=""><figcaption>Img1 Exp K=0.1, 15 iters</figcaption></figure>
-        <figure class="card"><img src="./media/part3a_outputs/p3_img1_exp_k0p2_i30.png" alt=""><figcaption>Img1 Exp K=0.2, 30 iters</figcaption></figure>
-        <figure class="card"><img src="./media/part3a_outputs/p3_img2_exp_k0p1_i15.png" alt=""><figcaption>Img2 Exp K=0.1, 15 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img1_exp_k0p05_i5.png" alt=""><figcaption>Exp K=0.05, 5 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img1_exp_k0p1_i15.png" alt=""><figcaption>Exp K=0.1, 15 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img1_exp_k0p2_i30.png" alt=""><figcaption>Exp K=0.2, 30 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img1_exp_k0p2_i15.png" alt=""><figcaption>Exp K=0.2, 15 iters</figcaption></figure>
       </div>
 
-      <h3>Reciprocal Conductance</h3>
+      <h4>Reciprocal Conductance</h4>
       <div class="grid four">
-        <figure class="card"><img src="./media/part3a_outputs/p3_img1_recip_k0p05_i5.png" alt=""><figcaption>Img1 Recip K=0.05, 5 iters</figcaption></figure>
-        <figure class="card"><img src="./media/part3a_outputs/p3_img1_recip_k0p1_i15.png" alt=""><figcaption>Img1 Recip K=0.1, 15 iters</figcaption></figure>
-        <figure class="card"><img src="./media/part3a_outputs/p3_img1_recip_k0p2_i30.png" alt=""><figcaption>Img1 Recip K=0.2, 30 iters</figcaption></figure>
-        <figure class="card"><img src="./media/part3a_outputs/p3_img2_recip_k0p2_i30.png" alt=""><figcaption>Img2 Recip K=0.2, 30 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img1_recip_k0p05_i5.png" alt=""><figcaption>Recip K=0.05, 5 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img1_recip_k0p1_i15.png" alt=""><figcaption>Recip K=0.1, 15 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img1_recip_k0p2_i30.png" alt=""><figcaption>Recip K=0.2, 30 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img1_recip_k0p2_i15.png" alt=""><figcaption>Recip K=0.2, 15 iters</figcaption></figure>
+      </div>
+
+      <!-- Image 2 -->
+      <h3>Image 2 — CT Head</h3>
+
+      <h4>Exponential Conductance</h4>
+      <div class="grid four">
+        <figure class="card"><img src="./media/part3a_outputs/p3_img2_exp_k0p05_i5.png" alt=""><figcaption>Exp K=0.05, 5 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img2_exp_k0p1_i15.png" alt=""><figcaption>Exp K=0.1, 15 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img2_exp_k0p2_i30.png" alt=""><figcaption>Exp K=0.2, 30 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img2_exp_k0p2_i15.png" alt=""><figcaption>Exp K=0.2, 15 iters</figcaption></figure>
+      </div>
+
+      <h4>Reciprocal Conductance</h4>
+      <div class="grid four">
+        <figure class="card"><img src="./media/part3a_outputs/p3_img2_recip_k0p05_i5.png" alt=""><figcaption>Recip K=0.05, 5 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img2_recip_k0p1_i15.png" alt=""><figcaption>Recip K=0.1, 15 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img2_recip_k0p2_i30.png" alt=""><figcaption>Recip K=0.2, 30 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img2_recip_k0p2_i15.png" alt=""><figcaption>Recip K=0.2, 15 iters</figcaption></figure>
       </div>
 
       <p class="discussion">
-        Smaller K makes the conductance drop much quicker near edges, so diffusion stops at boundaries and denoises mainly inside regions. Larger K on the other hand behave more similarly to isotropic blur and softens edges.
-        As you increase the number of iterations, flat areas will get progressively more smooth. However it is possible to have too much iterations, resulting in a cartoonish like smooth texture. 
+        Smaller K makes the conductance drop much quicker near edges, so diffusion stops at boundaries and denoises mainly inside regions. Larger K behaves more like isotropic blur and softens edges. 
+        Increasing iterations progressively smooths flat areas, but too many iterations can lead to cartoonish textures. Both exponential and reciprocal conductance follow this pattern, though exponential tends to preserve edges a bit more strongly.
       </p>
     </section>
+
 
     <!-- ===================== Part 3 — Q2 ===================== -->
     <section id="part3-q2">
       <h2>Part 3 — Question 2: Comparison with Gaussian</h2>
+      <p class="summary">
+        Comparison of anisotropic diffusion (Perona–Malik) with Gaussian smoothing at a similar overall denoising level.
+      </p>
+
+      <!-- Image 1 -->
+      <h3>Image 1 — Lena</h3>
       <div class="grid three">
-        <figure class="card"><img src="./media/part3b_outputs/p3_img1_pm_exp_k0p1_i15.png" alt=""><figcaption>Img1 PM Exp (K=0.1, 15 iters)</figcaption></figure>
-        <figure class="card"><img src="./media/part3b_outputs/p3_img1_pm_recip_k0p2_i30.png" alt=""><figcaption>Img1 PM Recip (K=0.2, 30 iters)</figcaption></figure>
-        <figure class="card"><img src="./media/part3b_outputs/p3_img1_gauss_sigma1p2.png" alt=""><figcaption>Img1 Gaussian σ=1.2</figcaption></figure>
+        <figure class="card">
+          <img src="./media/part3b_outputs/p3_img1_original.png" alt="">
+          <figcaption>Img1 — Original</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part3b_outputs/p3_img1_pm_exp_k0p1_i15.png" alt="">
+          <figcaption>Img1 — PM (exp), K=0.1, 15 iters</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part3b_outputs/p3_img1_gauss_sigma1p2.png" alt="">
+          <figcaption>Img1 — Gaussian σ=1.2</figcaption>
+        </figure>
       </div>
+
+      <!-- Image 2 -->
+      <h3>Image 2 — CT Head</h3>
+      <div class="grid three">
+        <figure class="card">
+          <img src="./media/part3b_outputs/p3_img2_original.png" alt="">
+          <figcaption>Img2 — Original</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part3b_outputs/p3_img2_pm_exp_k0p1_i15.png" alt="">
+          <figcaption>Img2 — PM (exp), K=0.1, 15 iters</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part3b_outputs/p3_img2_gauss_sigma1p2.png" alt="">
+          <figcaption>Img2 — Gaussian σ=1.2</figcaption>
+        </figure>
+      </div>
+
       <p class="discussion">
-        Although gaussian smoothing has a similar overall noise reduction, it blurs the images uniformly. Boundaries and thin structures may overly soften and begin to blend into the surroundings. This is what Anisotropic diffusion does better, as it denoises within set regions so that sharp edges in the image are still conserved.
+        Although Gaussian smoothing achieves similar noise reduction, it blurs edges uniformly so boundaries and thin structures soften.
+        Perona–Malik diffusion makes the conductance small near large gradients, reducing smoothing across edges while still denoising
+        within regions—so edge contrast and fine lines remain noticeably crisper in both images.
       </p>
     </section>
+
   </main>
 
   <footer class="site-footer">
