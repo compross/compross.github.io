@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Project 1 — Histogram & Filtering | CS180</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../" class="back">&larr; Home</a>
+    <h1>Project 1 — Histogram & Filtering</h1>
+    <p class="byline">Your Name • CS180/280A</p>
+    <nav class="toc">
+      <a href="#part1">Part 1</a>
+      <a href="#part2a">2(a)</a>
+      <a href="#part2b">2(b)</a>
+      <a href="#part2c">2(c)</a>
+      <a href="#part2d">2(d)</a>
+      <a href="#part2e">2(e)</a>
+      <a href="#part3-q1">3 — Q1</a>
+      <a href="#part3-q2">3 — Q2</a>
+      <a href="#discussion">Discussion</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ===================== Part 1 ===================== -->
+    <section id="part1">
+      <h2>Part 1 — Perspective vs. Approx. Orthographic</h2>
+      <div class="grid">
+        <figure class="card">
+          <img src="./media/part1/p1_perspective.jpg" alt="Perspective">
+          <figcaption>Perspective projection</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part1/p1_orthographic.jpg" alt="Approx orthographic">
+          <figcaption>Approx. orthographic (zoom/crop)</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ===================== Part 2(a) ===================== -->
+    <section id="part2a">
+      <h2>Part 2(a) — Histogram Equalization (Provided Images)</h2>
+
+      <!-- Image 1 -->
+      <div class="grid four">
+        <figure class="card"><img src="./media/part2a_outputs/img1_orig.png"><figcaption>Img1 Original</figcaption></figure>
+        <figure class="card"><img src="./media/part2a_outputs/img1_orig_hist.png"><figcaption>Img1 Orig. Hist</figcaption></figure>
+        <figure class="card"><img src="./media/part2a_outputs/img1_eq.png"><figcaption>Img1 Equalized</figcaption></figure>
+        <figure class="card"><img src="./media/part2a_outputs/img1_eq_hist.png"><figcaption>Img1 Eq. Hist</figcaption></figure>
+      </div>
+
+      <!-- Image 2 -->
+      <div class="grid four">
+        <figure class="card"><img src="./media/part2a_outputs/img2_orig.png"><figcaption>Img2 Original</figcaption></figure>
+        <figure class="card"><img src="./media/part2a_outputs/img2_orig_hist.png"><figcaption>Img2 Orig. Hist</figcaption></figure>
+        <figure class="card"><img src="./media/part2a_outputs/img2_eq.png"><figcaption>Img2 Equalized</figcaption></figure>
+        <figure class="card"><img src="./media/part2a_outputs/img2_eq_hist.png"><figcaption>Img2 Eq. Hist</figcaption></figure>
+      </div>
+
+      <!-- Image 3 -->
+      <div class="grid four">
+        <figure class="card"><img src="./media/part2a_outputs/img3_orig.png"><figcaption>Img3 Original</figcaption></figure>
+        <figure class="card"><img src="./media/part2a_outputs/img3_orig_hist.png"><figcaption>Img3 Orig. Hist</figcaption></figure>
+        <figure class="card"><img src="./media/part2a_outputs/img3_eq.png"><figcaption>Img3 Equalized</figcaption></figure>
+        <figure class="card"><img src="./media/part2a_outputs/img3_eq_hist.png"><figcaption>Img3 Eq. Hist</figcaption></figure>
+      </div>
+    </section>
+
+    <!-- ===================== Part 2(b) ===================== -->
+    <section id="part2b">
+      <h2>Part 2(b) — Equalization on My Photo</h2>
+      <div class="grid four">
+        <figure class="card"><img src="./media/part2b_outputs/bbq_orig.png"><figcaption>Original</figcaption></figure>
+        <figure class="card"><img src="./media/part2b_outputs/bbq_orig_hist.png"><figcaption>Original Hist</figcaption></figure>
+        <figure class="card"><img src="./media/part2b_outputs/bbq_eq.png"><figcaption>Equalized</figcaption></figure>
+        <figure class="card"><img src="./media/part2b_outputs/bbq_eq_hist.png"><figcaption>Eq. Hist</figcaption></figure>
+      </div>
+    </section>
+
+    <!-- ===================== Part 2(c) ===================== -->
+    <section id="part2c">
+      <h2>Part 2(c) — Histogram Matching</h2>
+      <div class="grid four">
+        <figure class="card"><img src="./media/part2c_outputs/target.png"><figcaption>Target</figcaption></figure>
+        <figure class="card"><img src="./media/part2c_outputs/target_hist.png"><figcaption>Target Hist</figcaption></figure>
+        <figure class="card"><img src="./media/part2c_outputs/src1_matched.png"><figcaption>Src1 Matched</figcaption></figure>
+        <figure class="card"><img src="./media/part2c_outputs/src1_matched_hist.png"><figcaption>Src1 Matched Hist</figcaption></figure>
+      </div>
+
+      <!-- Repeat for sources 2 & 3 if you matched them -->
+      <!--
+      <div class="grid four">
+        <figure class="card"><img src="./media/part2c_outputs/src2_matched.png"><figcaption>Src2 Matched</figcaption></figure>
+        <figure class="card"><img src="./media/part2c_outputs/src2_matched_hist.png"><figcaption>Src2 Matched Hist</figcaption></figure>
+        <figure class="card"><img src="./media/part2c_outputs/src3_matched.png"><figcaption>Src3 Matched</figcaption></figure>
+        <figure class="card"><img src="./media/part2c_outputs/src3_matched_hist.png"><figcaption>Src3 Matched Hist</figcaption></figure>
+      </div>
+      -->
+    </section>
+
+    <!-- ===================== Part 2(d) ===================== -->
+    <section id="part2d">
+      <h2>Part 2(d) — DoG vs Gaussian→Derivative</h2>
+      <p class="note">Both paths use the same operator; derivatives shown with symmetric rescale.</p>
+      <div class="grid four">
+        <figure class="card"><img src="./media/part2d_outputs/img1_Ix_naive.png"><figcaption>Img1 Ix (Naive)</figcaption></figure>
+        <figure class="card"><img src="./media/part2d_outputs/img1_Ix_dog.png"><figcaption>Img1 Ix (DoG)</figcaption></figure>
+        <figure class="card"><img src="./media/part2d_outputs/img1_Iy_naive.png"><figcaption>Img1 Iy (Naive)</figcaption></figure>
+        <figure class="card"><img src="./media/part2d_outputs/img1_Iy_dog.png"><figcaption>Img1 Iy (DoG)</figcaption></figure>
+      </div>
+
+      <!-- Add similar rows for images 2 and 3 if you produced them -->
+    </section>
+
+    <!-- ===================== Part 2(e) ===================== -->
+    <section id="part2e">
+      <h2>Part 2(e) — Unsharp Masking</h2>
+      <div class="grid four">
+        <figure class="card"><img src="./media/part2e_outputs/ct_orig.png"><figcaption>CT — Original</figcaption></figure>
+        <figure class="card"><img src="./media/part2e_outputs/ct_sharp_sigma1p3_alpha2.png"><figcaption>CT — Sharp (σ=1.3, α=2)</figcaption></figure>
+        <figure class="card"><img src="./media/part2e_outputs/moon_orig.png"><figcaption>Moon — Original</figcaption></figure>
+        <figure class="card"><img src="./media/part2e_outputs/moon_sharp_sigma1p3_alpha4.png"><figcaption>Moon — Sharp (σ=1.3, α=4)</figcaption></figure>
+      </div>
+    </section>
+
+    <!-- ===================== Part 3 — Q1 ===================== -->
+    <section id="part3-q1">
+      <h2>Part 3 — Question 1: PM Implementation & Parameter Study</h2>
+      <h3>Exponential Conductance</h3>
+      <div class="grid four">
+        <figure class="card"><img src="./media/part3a_outputs/p3_img1_exp_k0p05_i5.png"><figcaption>Img1 Exp K=0.05, 5 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img1_exp_k0p1_i15.png"><figcaption>Img1 Exp K=0.1, 15 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img1_exp_k0p2_i30.png"><figcaption>Img1 Exp K=0.2, 30 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img2_exp_k0p1_i15.png"><figcaption>Img2 Exp K=0.1, 15 iters</figcaption></figure>
+      </div>
+
+      <h3>Reciprocal Conductance</h3>
+      <div class="grid four">
+        <figure class="card"><img src="./media/part3a_outputs/p3_img1_recip_k0p05_i5.png"><figcaption>Img1 Recip K=0.05, 5 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img1_recip_k0p1_i15.png"><figcaption>Img1 Recip K=0.1, 15 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img1_recip_k0p2_i30.png"><figcaption>Img1 Recip K=0.2, 30 iters</figcaption></figure>
+        <figure class="card"><img src="./media/part3a_outputs/p3_img2_recip_k0p2_i30.png"><figcaption>Img2 Recip K=0.2, 30 iters</figcaption></figure>
+      </div>
+    </section>
+
+    <!-- ===================== Part 3 — Q2 ===================== -->
+    <section id="part3-q2">
+      <h2>Part 3 — Question 2: Comparison with Gaussian</h2>
+      <div class="grid three">
+        <figure class="card"><img src="./media/part3b_outputs/p3_img1_pm_exp_k0p1_i15.png"><figcaption>Img1 PM Exp (K=0.1, 15 iters)</figcaption></figure>
+        <figure class="card"><img src="./media/part3b_outputs/p3_img1_pm_recip_k0p2_i30.png"><figcaption>Img1 PM Recip (K=0.2, 30 iters)</figcaption></figure>
+        <figure class="card"><img src="./media/part3b_outputs/p3_img1_gauss_sigma1p2.png"><figcaption>Img1 Gaussian σ=1.2</figcaption></figure>
+      </div>
+
+      <!-- Add a second row for Image 2 if desired -->
+      <!--
+      <div class="grid three">
+        <figure class="card"><img src="./media/part3b_outputs/p3_img2_pm_exp_k0p1_i15.png"><figcaption>Img2 PM Exp</figcaption></figure>
+        <figure class="card"><img src="./media/part3b_outputs/p3_img2_pm_recip_k0p2_i30.png"><figcaption>Img2 PM Recip</figcaption></figure>
+        <figure class="card"><img src="./media/part3b_outputs/p3_img2_gauss_sigma1p2.png"><figcaption>Img2 Gaussian</figcaption></figure>
+      </div>
+      -->
+    </section>
+
+    <!-- ===================== Discussion / Answers ===================== -->
+    <section id="discussion">
+      <h2>Discussion & Answers</h2>
+      <h3>2(a) Equalization: What changed?</h3>
+      <p><!-- Your brief notes here --></p>
+
+      <h3>2(c) Matching: Notes</h3>
+      <p><!-- Your brief notes here --></p>
+
+      <h3>2(d) DoG vs Gaussian→Derivative</h3>
+      <p><!-- Your brief notes here --></p>
+
+      <h3>2(e) Sharpening</h3>
+      <p><!-- Your brief notes here --></p>
+
+      <h3>Part 3 (Q1 & Q2)</h3>
+      <p><!-- Your brief notes here --></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Your Name</p>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
