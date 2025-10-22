@@ -28,42 +28,37 @@
       <p class="summary">
         I select 4 point correspondences (corners on the same planar surface), estimate a homography via normalized DLT, and warp each image to a fronto-parallel view. I show the original, the correspondence visualization, and the rectified output for each scene.
       </p>
-      <p class="note">
-        Test images provided by the assignment; my correspondences were hard-coded from a coordinate picker. Homography <em>H</em> maps source plane → target rectangle. Warping uses inverse mapping via <code>cv2.warpPerspective</code>.
-      </p>
     </section>
 
         <!-- ===================== Part 1: Originals ===================== -->
     <section id="part1-originals">
-    <h3>Original Scenes (Provided)</h3>
-    <p class="note">These are the five input photos used for rectification in Part 1.</p>
+    <h3>Original Scenes</h3>
     <div class="grid five">
-        <figure class="card"><img src="./media/part1/scene_1-a.jpg" alt="Scene 1-a original"><figcaption>1-a — original</figcaption></figure>
-        <figure class="card"><img src="./media/part1/scene_1-b.jpg" alt="Scene 1-b original"><figcaption>1-b — original</figcaption></figure>
-        <figure class="card"><img src="./media/part1/scene_1-c.jpg" alt="Scene 1-c original"><figcaption>1-c — original</figcaption></figure>
-        <figure class="card"><img src="./media/part1/scene_2-a.jpg" alt="Scene 2-a original"><figcaption>2-a — original</figcaption></figure>
-        <figure class="card"><img src="./media/part1/scene_2-b.jpg" alt="Scene 2-b original"><figcaption>2-b — original</figcaption></figure>
+        <figure class="card"><img src="./media/part_1/scene_1-a.jpg" alt="Scene 1-a original"><figcaption>1-a — original</figcaption></figure>
+        <figure class="card"><img src="./media/part_1/scene_1-b.jpg" alt="Scene 1-b original"><figcaption>1-b — original</figcaption></figure>
+        <figure class="card"><img src="./media/part_1/scene_1-c.jpg" alt="Scene 1-c original"><figcaption>1-c — original</figcaption></figure>
+        <figure class="card"><img src="./media/part_1/scene_2-a.jpg" alt="Scene 2-a original"><figcaption>2-a — original</figcaption></figure>
+        <figure class="card"><img src="./media/part_1/scene_2-b.jpg" alt="Scene 2-b original"><figcaption>2-b — original</figcaption></figure>
     </div>
     </section>
 
     <!-- ===================== Part 1: Correspondences ===================== -->
     <section id="part1-correspondences">
-    <h3>How I Picked the Correspondence Points</h3>
-    <p class="note">
-        For each image, I selected the four <strong>outer frame corners</strong> that lie on the same physical plane.  
-        I used a small helper built with OpenCV to display the pixel coordinate under the mouse and to record clicks; the points shown below are exactly the coordinates I used in Part 1.
+    <p class="summary">
+        For each image, I selected the four outer frame corners that lie on the same physical plane.  
+        I used a small helper built with OpenCV to display the pixel coordinate under the mouse and to record clicks. The points shown below are the locations of the coordinates I used in Part 1.
     </p>
     <div class="grid five">
-        <figure class="card"><img src="./media/part1/scene_1-a_coords.jpg" alt="1-a with marked corners"><figcaption>1-a — chosen corners</figcaption></figure>
-        <figure class="card"><img src="./media/part1/scene_1-b_coords.jpg" alt="1-b with marked corners"><figcaption>1-b — chosen corners</figcaption></figure>
-        <figure class="card"><img src="./media/part1/scene_1-c_coords.jpg" alt="1-c with marked corners"><figcaption>1-c — chosen corners</figcaption></figure>
-        <figure class="card"><img src="./media/part1/scene_2-a_coords.jpg" alt="2-a with marked corners"><figcaption>2-a — chosen corners</figcaption></figure>
-        <figure class="card"><img src="./media/part1/scene_2-b_coords.jpg" alt="2-b with marked corners"><figcaption>2-b — chosen corners</figcaption></figure>
+        <figure class="card"><img src="./media/part_1/scene_1-a_coords.jpg" alt="1-a with marked corners"><figcaption>1-a — chosen corners</figcaption></figure>
+        <figure class="card"><img src="./media/part_1/scene_1-b_coords.jpg" alt="1-b with marked corners"><figcaption>1-b — chosen corners</figcaption></figure>
+        <figure class="card"><img src="./media/part_1/scene_1-c_coords.jpg" alt="1-c with marked corners"><figcaption>1-c — chosen corners</figcaption></figure>
+        <figure class="card"><img src="./media/part_1/scene_2-a_coords.jpg" alt="2-a with marked corners"><figcaption>2-a — chosen corners</figcaption></figure>
+        <figure class="card"><img src="./media/part_1/scene_2-b_coords.jpg" alt="2-b with marked corners"><figcaption>2-b — chosen corners</figcaption></figure>
     </div>
 
     <p class="discussion">
         After collecting 4 points per image, I ordered them clockwise and solved for a 3×3 homography using normalized DLT.  
-        I then warped each source image so that the selected quadrilateral maps to an axis-aligned rectangle, producing a fronto-parallel view.
+        I then warped each source image so that the selected quadrilateral maps to an axis aligned rectangle, producing a fronto-parallel view.
     </p>
     </section>
 
@@ -72,16 +67,15 @@
     <h3>Rectified Outputs</h3>
     <p class="summary">
         After estimating the homography matrices for each scene, the warped and rectified outputs
-        can be seen below. Each image shows the planar surface from a fronto-parallel perspective,
-        effectively removing the original viewing distortion.
+        can be seen below. Each image shows the planar surface from a fronto-parallel perspective.
     </p>
 
     <div class="grid five">
-        <figure class="card"><img src="./media/part1/1-a_rectified.jpg" alt=""><figcaption>Scene 1-a Rectified</figcaption></figure>
-        <figure class="card"><img src="./media/part1/1-b_rectified.jpg" alt=""><figcaption>Scene 1-b Rectified</figcaption></figure>
-        <figure class="card"><img src="./media/part1/1-c_rectified.jpg" alt=""><figcaption>Scene 1-c Rectified</figcaption></figure>
-        <figure class="card"><img src="./media/part1/2-a_rectified.jpg" alt=""><figcaption>Scene 2-a Rectified</figcaption></figure>
-        <figure class="card"><img src="./media/part1/2-b_rectified.jpg" alt=""><figcaption>Scene 2-b Rectified</figcaption></figure>
+        <figure class="card"><img src="./media/part_1/1-a_rectified.jpg" alt=""><figcaption>Scene 1-a Rectified</figcaption></figure>
+        <figure class="card"><img src="./media/part_1/1-b_rectified.jpg" alt=""><figcaption>Scene 1-b Rectified</figcaption></figure>
+        <figure class="card"><img src="./media/part_1/1-c_rectified.jpg" alt=""><figcaption>Scene 1-c Rectified</figcaption></figure>
+        <figure class="card"><img src="./media/part_1/2-a_rectified.jpg" alt=""><figcaption>Scene 2-a Rectified</figcaption></figure>
+        <figure class="card"><img src="./media/part_1/2-b_rectified.jpg" alt=""><figcaption>Scene 2-b Rectified</figcaption></figure>
     </div>
     </section>
 
@@ -90,15 +84,12 @@
     <p class="discussion">
         Homography is a 3×3 projective transformation that relates two views of the same planar
         surface. By mapping at least four corresponding points between the distorted image and a
-        target rectangle, we can solve for the homography matrix H using the Direct Linear Transform
-        (DLT) algorithm. Applying H with inverse warping via <code>cv2.warpPerspective</code>
+        target rectangle, we can solve for the homography matrix H using the DLT algorithm. Applying H with inverse warping via <code>cv2.warpPerspective</code>
         reprojects every pixel so that the chosen surface appears fronto-parallel.  
         <br><br>
-        This process removes the effects of perspective distortion—parallel lines appear parallel,
+        This process removes the effects of perspective distortion. Parallel lines appear parallel,
         and relative geometry is preserved up to scale. In practice, this allows a photograph of a
-        tilted object (like a painting or page) to be corrected as if it were taken head-on, forming
-        the mathematical foundation for tasks such as document scanning, panorama stitching, and
-        augmented-reality alignment.
+        tilted object to be corrected as if it were taken head on.
     </p>
     </section>
 
@@ -106,54 +97,59 @@
 
     <!-- ===================== Part 2 ===================== -->
     <section id="part2">
-      <h2>Part 2 — Creative Application: Document “Scan”</h2>
+      <h2>Part 2 — Creative Application: Document Scan</h2>
       <p class="summary">
-        I apply the same homography pipeline to smartphone photos of a notebook page, producing a “scanned” version. After rectification, I enhance the image with light normalization and either soft grayscale or adaptive B/W binarization.
-      </p>
-      <p class="note">
-        Post-processing: remove uneven lighting by subtracting a blurred background, normalize contrast, and optionally apply adaptive thresholding for crisp text.
+        I apply the same homography pipeline to smartphone photos of a notebook page, producing a “scanned” version. After rectification, I enhance the image with light normalization.
       </p>
     </section>
 
-    <!-- Doc 1 -->
-    <section id="part2-doc1">
-      <h3>Document 1</h3>
-      <div class="grid four">
-        <figure class="card"><img src="./media/part2/doc1_original.jpg" alt=""><figcaption>Original phone photo</figcaption></figure>
-        <figure class="card"><img src="./media/part2/doc1_correspondences.jpg" alt=""><figcaption>Page corners</figcaption></figure>
-        <figure class="card"><img src="./media/part2/doc1_rectified.jpg" alt=""><figcaption>Rectified (deskewed)</figcaption></figure>
-        <figure class="card"><img src="./media/part2/doc1_scan_bw.jpg" alt=""><figcaption>Scanned look (B/W)</figcaption></figure>
-      </div>
-      <div class="grid three">
-        <figure class="card"><img src="./media/part2/doc1_scan_soft.jpg" alt=""><figcaption>Scanned look (soft grayscale)</figcaption></figure>
-        <figure class="card"><img src="./media/part2/doc1_detail_before.jpg" alt=""><figcaption>Detail — before</figcaption></figure>
-        <figure class="card"><img src="./media/part2/doc1_detail_after.jpg" alt=""><figcaption>Detail — after</figcaption></figure>
-      </div>
+    <!-- ===================== Part 2 — Inputs ===================== -->
+    <section id="part2-inputs">
+    <h3>Document Scan — Original Photos</h3>
+    <p class="summary">Four handheld phone photos captured at different angles and lighting.</p>
+    <div class="grid four">
+        <figure class="card"><img src="./media/part_2/test_1.jpg" alt="Test 1"><figcaption>Test 1 — original</figcaption></figure>
+        <figure class="card"><img src="./media/part_2/test_2.jpg" alt="Test 2"><figcaption>Test 2 — original</figcaption></figure>
+        <figure class="card"><img src="./media/part_2/test_3.jpg" alt="Test 3"><figcaption>Test 3 — original</figcaption></figure>
+        <figure class="card"><img src="./media/part_2/test_4.jpg" alt="Test 4"><figcaption>Test 4 — original</figcaption></figure>
+    </div>
     </section>
 
-    <!-- Doc 2 -->
-    <section id="part2-doc2">
-      <h3>Document 2</h3>
-      <div class="grid four">
-        <figure class="card"><img src="./media/part2/doc2_original.jpg" alt=""><figcaption>Original phone photo</figcaption></figure>
-        <figure class="card"><img src="./media/part2/doc2_correspondences.jpg" alt=""><figcaption>Page corners</figcaption></figure>
-        <figure class="card"><img src="./media/part2/doc2_rectified.jpg" alt=""><figcaption>Rectified (deskewed)</figcaption></figure>
-        <figure class="card"><img src="./media/part2/doc2_scan_bw.jpg" alt=""><figcaption>Scanned look (B/W)</figcaption></figure>
-      </div>
-      <div class="grid three">
-        <figure class="card"><img src="./media/part2/doc2_scan_soft.jpg" alt=""><figcaption>Scanned look (soft grayscale)</figcaption></figure>
-        <figure class="card"><img src="./media/part2/doc2_detail_before.jpg" alt=""><figcaption>Detail — before</figcaption></figure>
-        <figure class="card"><img src="./media/part2/doc2_detail_after.jpg" alt=""><figcaption>Detail — after</figcaption></figure>
-      </div>
+    <!-- ===================== Part 2 — Selected Corners ===================== -->
+    <section id="part2-corners">
+    <h3>Selected Page Corners</h3>
+    <p class="summary">I used the four page corners for each image (using the same helper script from Part 1) and ordered them clockwise.</p>
+    <div class="grid four">
+        <figure class="card"><img src="./media/part_2/test_1_coords.jpg" alt="Test 1 corners"><figcaption>Test 1 — corners</figcaption></figure>
+        <figure class="card"><img src="./media/part_2/test_2_coords.jpg" alt="Test 2 corners"><figcaption>Test 2 — corners</figcaption></figure>
+        <figure class="card"><img src="./media/part_2/test_3_coords.jpg" alt="Test 3 corners"><figcaption>Test 3 — corners</figcaption></figure>
+        <figure class="card"><img src="./media/part_2/test_4_coords.jpg" alt="Test 4 corners"><figcaption>Test 4 — corners</figcaption></figure>
+    </div>
+    </section>
+
+    <!-- ===================== Part 2 — Rectified Scans ===================== -->
+    <section id="part2-outputs">
+    <h3>Rectified “Scanned” Outputs</h3>
+    <p class="summary">
+        Each page is warped to a fixed US Letter aspect using the homography computed from the four corners.
+        The result is a fronto-parallel, scanned page.
+    </p>
+    <div class="grid four">
+        <figure class="card"><img src="./media/part_2/test_1_rectified.jpg" alt="Test 1 rectified"><figcaption>Test 1 — rectified</figcaption></figure>
+        <figure class="card"><img src="./media/part_2/test_2_rectified.jpg" alt="Test 2 rectified"><figcaption>Test 2 — rectified</figcaption></figure>
+        <figure class="card"><img src="./media/part_2/test_3_rectified.jpg" alt="Test 3 rectified"><figcaption>Test 3 — rectified</figcaption></figure>
+        <figure class="card"><img src="./media/part_2/test_4_rectified.jpg" alt="Test 4 rectified"><figcaption>Test 4 — rectified</figcaption></figure>
+    </div>
     </section>
 
     <!-- ===================== Wrap-up ===================== -->
     <section id="discussion">
-      <h2>Notes & Reflection</h2>
+      <h2>Notes</h2>
       <p class="discussion">
-        <strong>What worked.</strong> Corner selection on a consistent border level (inner frame / page corners) made the homography stable. Using a fixed target aspect (US Letter) ensures readable, printable scans. The adaptive threshold gives crisp handwriting while the soft scan preserves paper texture.<br>
-        <strong>Challenges.</strong> Specular highlights and shadows can bias corner clicks; clicking slightly inside the true corner helps. Very oblique views increase perspective foreshortening, so output resolution needs to be sized by the longer side to avoid aliasing.<br>
-        <strong>Takeaway.</strong> Homography is a simple, powerful tool for any task where content lies on (or can be approximated by) a plane—from art rectification to practical document scanning.
+        From the results of part 1 alone, I had figured that the process would work well for scans. I was correct, as the fronto-parallel versions of the document appear very well to the eye.
+        I made sure to include test images that were taked at steep angles, and even so the rectified version looked extremely good, even maintaining accurate geometry of skewed shapes
+        (as seen in test 4). The main issue that resulted from pictures taken at steep angles was the blur of the words. Future implementations of this could actually utilize unsharp masking,
+        which was implemented in project 1. Doing so would enhance the high frequency details of the image, potentially making the blurred writing much more readable.
       </p>
     </section>
   </main>
