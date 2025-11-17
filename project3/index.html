@@ -85,7 +85,7 @@
         </figure>
       </div>
       <p class="discussion">
-        On most of the images, the highest scoring prediction lies over the banana and yields a decent
+        On all of the images, the highest scoring prediction lies over the banana and yields a decent
         bounding box. Also, there are several cases where a cluster of nearby boxes with similar scores is created,
         which is will be taken care of when NMS is implemented in part 2.
       </p>
@@ -138,9 +138,9 @@
         The model appears to work somewhat well in a few cases, but not all of them. When testing, I opted to take pictures using an older (yellow/brown) and newer (green/yellow) banana.
         I included images of bananas on tables, in reflections, as a background object, and as a foreground object (with noisy background). In most cases, it appears that some part of the banana 
         was picked up in a few or several bounding boxes by the model. The two biggest issues the model seemed to struggle with most was noisy backgrounds (As seen in the top of image 1, and in image 6),
-        as well as when the banana is not the main focus (it was not picked up at all in the background of image 5). It can be noted, though, the probabilities (objecness score * class score) of these bananas
-        are extremely low, especially when compared to that of the validation images. Sample plain pictures of bananas were used for testing as well, and followed the same issue (although they appear much more similar to the training data).
-        A potential cause for this would be from resizing my own images. The original images frmo the d2l dataset were originally created as 256 x 256. The photos took from my phone were at a significantly higher resolution,
+        as well as when the banana is not the main focus (it was not picked up at all in the background of image 5). It can be noted, though, that the probabilities (objectness score * class score) of these bananas
+        are extremely low, especially when compared to that of the validation images. Sample plain pictures of bananas were used for testing as well, and both had the same issue (although they appear much more similar to the training data).
+        A potential cause for this would be from resizing my images. The original images from the d2l dataset were originally created as 256 x 256. The photos took from my phone were at a significantly higher resolution,
         but were then resized for detection purposes. Due to the drastic drop in resolution, several details including aspect ratio and the detail of the banana could be lost. Although it can detect some sort of 
         signifance at or around the banana in most images, the scores they receive are extremely low.
       </p>
@@ -151,8 +151,7 @@
       <h2>Part 2 — Non-Maximum Suppression (NMS)</h2>
       <p class="summary">
         I implemented a version of Non Maximum Suppression (NMS) and apply it to the YOLO outputs
-        from Part&nbsp;1. NMS removes redundant overlapping detections by keeping only the highest-scoring box when
-        multiple boxes overlap with high IoU. My implementation is then compared to torchvision's.
+        from Part&nbsp;1. My implementation is then compared to torchvision's.
       </p>
     </section>
 
@@ -160,9 +159,9 @@
     <section id="part2-nms-vis">
       <h3>YOLO Outputs Before and After NMS</h3>
       <p class="summary">
-        For each sample image from part 1, the YOLO grid predictions, including teh bounding boxes and confidence scores are shown.
+        For each sample image from part 1, the YOLO grid predictions, including the bounding boxes and confidence scores are shown.
         The comparison figures show the high-scoring boxes before NMS, the boxes kept by my
-        implementation, and the boxes kept by PyTorch's NMS. In both my implementation and pytorch's version the same boxes are kept.
+        implementation, and the boxes kept by PyTorch's NMS.
       </p>
       <div class="grid three">
         <figure class="card">
@@ -193,7 +192,7 @@
         For my implementation, I used a greedy algorithm where I sorted boxes by score, kept the
         highest scoring box(es), and discard any remaining boxes whose IoU did not meet a certain threshold. 
         This process was repeated until no boxes remain. The most notable reductions in boxes were on images 3 and 5, with no improvements made in image 2.
-        The output of my implementation matched the output of torchvision's in all samples.
+        The output of my implementation matched the output of torchvision's in all samples, showing my implementation was successful.
       </p>
     </section>
 
@@ -202,8 +201,8 @@
       <h3>Purpose and Limitations</h3>
       <p class="discussion">
         NMS is essential for detectors that output dense, overlapping predictions. Several overlapping predictions can make final results hard to interpret, and could possibly inflate detection counts. 
-        However, NMS is not perfect. Using a single IoU threshold can incorrectly suppress nearby
-        instances of the same class (for example, if two bananas overlap slightly), and running NMS independently
+        However, NMS does have some issues and limitations. Using a single IoU threshold can incorrectly suppress nearby
+        instances of the same class (for example if two bananas overlap slightly), and running NMS independently
         per class ignores relationships between categories. NMS also cannot fix localization errors. If the
         object detector constantly predicts boxes that are slightly off center of the real object, NMS will still keep those off center boxes.
       </p>
@@ -251,3 +250,4 @@
   </script>
 </body>
 </html>
+
