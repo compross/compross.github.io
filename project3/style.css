@@ -1,0 +1,134 @@
+/* ====== Modern, responsive styling for Project 1 page ====== */
+:root{
+  --bg:#0b0c0f;           /* page background (dark) */
+  --panel:#101318;        /* section background */
+  --card:#121721;         /* card tile */
+  --ink:#e9ecf2;          /* primary text */
+  --muted:#9aa4b2;        /* secondary text */
+  --accent:#7aa2ff;       /* links & accents */
+  --rule:#1c2330;         /* subtle borders */
+  --ring: rgba(122,162,255,.35);
+}
+
+@media (prefers-color-scheme: light){
+  :root{
+    --bg:#f6f8fb;
+    --panel:#ffffff;
+    --card:#ffffff;
+    --ink:#0f172a;
+    --muted:#4b5563;
+    --accent:#335cff;
+    --rule:#e6eaf0;
+    --ring: rgba(51,92,255,.25);
+  }
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  color:var(--ink);
+  background:radial-gradient(1200px 800px at 10% -10%, #1a2333 0%, transparent 60%),
+             radial-gradient(1000px 600px at 110% 10%, #162238 0%, transparent 50%),
+             var(--bg);
+  font:16px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* ---------- layout ---------- */
+.site-header{
+  position:sticky; top:0; z-index:10;
+  backdrop-filter: blur(8px);
+  background: color-mix(in oklab, var(--panel) 92%, transparent);
+  border-bottom:1px solid var(--rule);
+}
+.header-inner{
+  max-width:1100px; margin:0 auto; padding:14px 20px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+.brand h1{font-size:1.3rem; margin:0 0 2px}
+.byline{margin:0; color:var(--muted); font-size:.95rem}
+
+.toc{display:flex; flex-wrap:wrap; gap:8px}
+.toc a{
+  display:inline-block; padding:.4rem .7rem;
+  border:1px solid var(--rule); border-radius:999px;
+  background:var(--panel); color:var(--ink); text-decoration:none;
+  transition:all .15s ease;
+}
+.toc a:hover{border-color:var(--accent); box-shadow:0 0 0 4px var(--ring); color:var(--accent)}
+
+main{max-width:1100px; margin:26px auto; padding:0 20px}
+section{margin:32px 0; scroll-margin-top:100px}
+h2{margin:0 0 14px; font-size:1.6rem}
+h3{margin:18px 0 10px; font-size:1.2rem}
+h4{margin:14px 0 8px; font-size:1.05rem}
+.note{color:var(--muted)}
+
+/* ---------- cards + grids ---------- */
+.grid{display:grid; gap:14px; grid-template-columns:repeat(auto-fit, minmax(230px,1fr))}
+.grid.four{grid-template-columns:repeat(auto-fit, minmax(210px,1fr))}
+.grid.three{grid-template-columns:repeat(auto-fit, minmax(260px,1fr))}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--rule);
+  border-radius:14px;
+  padding:10px;
+  box-shadow:0 1px 0 rgba(0,0,0,.04), 0 10px 30px rgba(0,0,0,.18);
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.card:hover{
+  transform:translateY(-2px);
+  border-color:var(--accent);
+  box-shadow:0 12px 34px rgba(0,0,0,.28), 0 0 0 4px var(--ring);
+}
+.card img{
+  width:100%; height:auto; display:block; border-radius:10px;
+  background:linear-gradient(180deg, #0b0e13, #0b0e1300);
+}
+.card figcaption{
+  margin-top:.45rem; color:var(--muted); font-size:.92rem;
+}
+
+/* ---------- inline discussion boxes ---------- */
+.discussion {
+  margin-top:14px; padding:12px 16px;
+  border-left:3px solid var(--accent);
+  background:color-mix(in oklab, var(--panel) 95%, var(--accent) 5%);
+  border-radius:8px;
+  font-size:0.95rem; line-height:1.55;
+}
+
+/* ---------- links & misc ---------- */
+a{color:var(--accent); text-decoration:none}
+a:hover{opacity:.9}
+.back{color:var(--muted)}
+hr{border:0; border-top:1px solid var(--rule); margin:22px 0}
+
+.site-footer{
+  max-width:1100px; margin:40px auto 24px; padding:0 20px; color:var(--muted);
+  border-top:1px solid var(--rule);
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+}
+kbd{
+  padding:2px 6px; border:1px solid var(--rule); border-bottom-width:2px;
+  border-radius:6px; background:var(--panel); color:var(--ink); font: .9rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* ---------- Image modal (click-to-zoom) ---------- */
+.modal {
+  display:none; position:fixed; z-index:1000; padding-top:60px;
+  left:0; top:0; width:100%; height:100%; overflow:auto;
+  background-color:rgba(0,0,0,0.9);
+}
+.modal-content {
+  margin:auto; display:block; max-width:90%; max-height:80vh;
+  border-radius:12px;
+}
+#caption {
+  margin:auto; display:block; text-align:center; color:#ccc; padding:12px; max-width:90%;
+}
+.close {
+  position:absolute; top:20px; right:35px; color:#f1f1f1; font-size:40px; font-weight:bold; cursor:pointer;
+}
+.close:hover { color:#bbb; }
