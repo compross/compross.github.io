@@ -26,11 +26,9 @@
     <section id="part1">
       <h2>Part 1 — Lightweight Object Detection (YOLO on Bananas)</h2>
       <p class="summary">
-        In Part&nbsp;1 I implement a lightweight, YOLO-style object detector from scratch and train it on the
-        banana detection dataset from <em>d2l.ai</em>. The model uses an 8&times;8 prediction grid over a
-        256&times;256 image and outputs a bounding box, objectness, and class score per cell. I analyze the training
-        behavior, visualize detections on the validation set, and evaluate how well the model generalizes to my own
-        banana photos taken in more realistic settings.
+        In Part&nbsp;1 I implemented a YOLO object detector from scratch and train it on the
+        banana detection dataset from d2l. The model uses an 8&times;8 prediction grid over a
+        256&times;256 image and outputs a bounding box, objectness, and class score per cell.
       </p>
     </section>
 
@@ -38,112 +36,113 @@
     <section id="part1-training">
       <h3>Training Curve</h3>
       <p class="summary">
-        The detector is trained with a YOLO-style loss: an MSE loss on normalized box coordinates for positive cells,
-        a binary cross-entropy loss on objectness for both positive and negative cells (with down-weighted negatives),
-        and a class loss for positive cells. I train the model using SGD with momentum.
+        The detector is trained with a loss specified for YOLO. A MSE loss on normalized box coordinates for positive cells,
+        a binary cross-entropy loss on objectness for both positive and negative cells (negatives are down weighted),
+        and a class loss for positive cells. The coordinate loss encourages localization, the objectness loss penalizes false positives, and the class loss helps to ensure
+        that only cells containing the object will classify it correctly. I trained the model using SGD with momentum.
       </p>
       <div class="grid one">
         <figure class="card">
           <img src="./media/part_a/image_1.png" alt="Training loss curve for YOLO banana detector">
-          <figcaption>Training loss across epochs (total, coordinate, and classification/objectness components).</figcaption>
+          <figcaption>Training loss across epochs (total, coordinate, and objectness components).</figcaption>
         </figure>
       </div>
       <p class="discussion">
-        Over training, the total loss decreases and stabilizes. Coordinate loss drops more slowly than the
-        classification/objectness terms, which is expected because precise localization is harder than deciding
-        whether a banana is present. By the end of training the model consistently produces high scores on grid cells
-        near the banana and low scores elsewhere.
+        Over training, the total loss decreases and appears to converge at some value. Coordinate loss appears to drop slightly more slowly than the
+        objectness loss, which is expected because localization is harder than deciding
+        whether a banana is present. It also appears that the largeset decrease in loss happens over the first few epochs, which then seem to slowly converge in the following ones.
+        By the end of training the model consistently produces high scores on grid cells
+        near the banana and low scores elsewhere (in the validation set).
       </p>
     </section>
 
     <!-- ===== Part 1 — Sample Detections on Validation Set ===== -->
     <section id="part1-val">
-      <h3>Detections on Banana Validation Images</h3>
+      <h3>Sample Banana Detections</h3>
       <p class="summary">
-        Here I visualize five sample detections from the validation set. Each image shows YOLO grid predictions
-        projected into bounding boxes. Because many grid cells near the banana can fire simultaneously, we often see
-        several overlapping boxes before applying NMS.
+        5 sample detections from the validation set, each with their bounding boxes, are shown below.
       </p>
       <div class="grid five">
         <figure class="card">
           <img src="./media/part_a/image_2.png" alt="Validation detection 1">
-          <figcaption>Validation example 1 — tight bounding box around the banana.</figcaption>
+          <figcaption>Sample Detection 1</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_a/image_3.png" alt="Validation detection 2">
-          <figcaption>Validation example 2 — multiple overlapping boxes near the true object.</figcaption>
+          <figcaption>Sample Detection 2</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_a/image_4.png" alt="Validation detection 3">
-          <figcaption>Validation example 3 — correct localization with moderate confidence.</figcaption>
+          <figcaption>Sample Detection 3</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_a/image_5.png" alt="Validation detection 4">
-          <figcaption>Validation example 4 — nearly perfect overlap with the ground-truth box.</figcaption>
+          <figcaption>Sample Detection 4</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_a/image_6.png" alt="Validation detection 5">
-          <figcaption>Validation example 5 — several candidate boxes, all around the banana region.</figcaption>
+          <figcaption>Sample Detection 5</figcaption>
         </figure>
       </div>
       <p class="discussion">
-        On most validation images, the highest-scoring prediction lies over the banana and yields a reasonable
-        bounding box. At the same time, the model frequently produces a cluster of nearby boxes with similar scores,
-        which is exactly the kind of redundancy that non-maximum suppression will resolve in Part&nbsp;2.
+        On most of the images, the highest scoring prediction lies over the banana and yields a decent
+        bounding box. Also, there are several cases where a cluster of nearby boxes with similar scores is created,
+        which is will be taken care of when NMS is implemented in part 2.
       </p>
     </section>
 
     <!-- ===== Part 1 — Custom Images & Failure Cases ===== -->
     <section id="part1-custom">
-      <h3>Testing on My Own Banana Photos</h3>
+      <h3>Testing on My Own Images</h3>
       <p class="summary">
-        To evaluate generalization, I collected several banana photos with my phone in more realistic environments
-        (desk scenes, kitchen countertops, and outdoor backgrounds). These images differ from the training data in
-        lighting, background clutter, banana pose, and color. The figures below show both successful detections and
-        representative failure cases.
+        I took a variety of banana photos to test the model and see if it could applied to real-world, realistic images. Additionally, two copyright free stock images of bananas are
+        also used for testing and benchmark purposes
       </p>
       <div class="grid four">
         <figure class="card">
           <img src="./media/part_a/image_7.png" alt="Custom banana image 1">
-          <figcaption>Custom image 1 — successful detection on a relatively simple scene.</figcaption>
+          <figcaption>Custom Image 1</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_a/image_8.png" alt="Custom banana image 2">
-          <figcaption>Custom image 2 — correct box despite mild background clutter.</figcaption>
+          <figcaption>Custom Image 2</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_a/image_9.png" alt="Custom banana image 3">
-          <figcaption>Custom image 3 — model confuses a large background object for the banana.</figcaption>
+          <figcaption>Custom Image 3</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_a/image_10.png" alt="Custom banana image 4">
-          <figcaption>Custom image 4 — no boxes exceed the original confidence threshold.</figcaption>
+          <figcaption>Custom Image 4</figcaption>
         </figure>
       </div>
       <div class="grid four">
         <figure class="card">
           <img src="./media/part_a/image_11.png" alt="Custom banana image 5">
-          <figcaption>Custom image 5 — multiple weak boxes indicate uncertainty about the banana location.</figcaption>
+          <figcaption>Custom Image 5</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_a/image_12.png" alt="Custom banana image 6">
-          <figcaption>Custom image 6 — the detector fires on a visually similar curved object.</figcaption>
+          <figcaption>Custom Image 6</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_a/image_13.png" alt="Custom banana image 7">
-          <figcaption>Custom image 7 — strong dataset bias: cluttered scene causes near-zero scores everywhere.</figcaption>
+          <figcaption>Online Image 1</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_a/image_14.png" alt="Custom banana image 8">
-          <figcaption>Custom image 8 — example of using a very low threshold to visualize all predicted boxes.</figcaption>
+          <figcaption>Online Image 2</figcaption>
         </figure>
       </div>
       <p class="discussion">
-        The detector works well on images that roughly match the training distribution (single banana, relatively
-        clean background). In realistic scenes with heavy clutter, complex textures, or small bananas near the image
-        boundary, performance drops sharply: the model often either places its best box on a large unrelated object
-        or assigns uniformly low scores so that no box passes the original threshold. These results highlight strong
-        dataset bias and limited robustness of a tiny YOLO model trained from scratch on a small synthetic dataset.
+        The model appears to work somewhat well in a few cases, but not all of them. When testing, I opted to take pictures using an older (yellow/brown) and newer (green/yellow) banana.
+        I included images of bananas on tables, in reflections, as a background object, and as a foreground object (with noisy background). In most cases, it appears that some part of the banana 
+        was picked up in a few or several bounding boxes by the model. The two biggest issues the model seemed to struggle with most was noisy backgrounds (As seen in the top of image 1, and in image 6),
+        as well as when the banana is not the main focus (it was not picked up at all in the background of image 5). It can be noted, though, the probabilities (objecness score * class score) of these bananas
+        are extremely low, especially when compared to that of the validation images. Sample plain pictures of bananas were used for testing as well, and followed the same issue (although they appear much more similar to the training data).
+        A potential cause for this would be from resizing my own images. The original images frmo the d2l dataset were originally created as 256 x 256. The photos took from my phone were at a significantly higher resolution,
+        but were then resized for detection purposes. Due to the drastic drop in resolution, several details including aspect ratio and the detail of the banana could be lost. Although it can detect some sort of 
+        signifance at or around the banana in most images, the scores they receive are extremely low.
       </p>
     </section>
 
@@ -151,85 +150,65 @@
     <section id="part2">
       <h2>Part 2 — Non-Maximum Suppression (NMS)</h2>
       <p class="summary">
-        In Part&nbsp;2 I implement Non-Maximum Suppression (NMS) from scratch and apply it to the YOLO grid outputs
+        I implemented a version of Non Maximum Suppression (NMS) and apply it to the YOLO outputs
         from Part&nbsp;1. NMS removes redundant overlapping detections by keeping only the highest-scoring box when
-        multiple boxes overlap with high Intersection-over-Union (IoU). I then compare my implementation to
-        <code>torchvision.ops.nms</code> and discuss the strengths and limitations of this post-processing step.
+        multiple boxes overlap with high IoU. My implementation is then compared to torchvision's.
       </p>
     </section>
 
     <!-- ===== Part 2 — Before / After NMS Comparisons ===== -->
     <section id="part2-nms-vis">
-      <h3>YOLO Outputs Before &amp; After NMS</h3>
+      <h3>YOLO Outputs Before and After NMS</h3>
       <p class="summary">
-        For each test image, I decode all YOLO grid predictions into bounding boxes and confidence scores.
-        The comparison figures show three panels: (1) all high-scoring boxes before NMS, (2) boxes kept by my
-        implementation, and (3) boxes kept by PyTorch&apos;s NMS. In practice, both implementations choose the same
-        final boxes on these examples.
+        For each sample image from part 1, the YOLO grid predictions, including teh bounding boxes and confidence scores are shown.
+        The comparison figures show the high-scoring boxes before NMS, the boxes kept by my
+        implementation, and the boxes kept by PyTorch's NMS. In both my implementation and pytorch's version the same boxes are kept.
       </p>
       <div class="grid three">
         <figure class="card">
           <img src="./media/part_b/image_1_comparison.png" alt="NMS comparison 1">
-          <figcaption>Example 1 — before NMS vs. after my NMS vs. after <code>torchvision.ops.nms</code>.</figcaption>
+          <figcaption>Comparison 1</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_b/image_2_comparison.png" alt="NMS comparison 2">
-          <figcaption>Example 2 — clustered detections reduced to a single clean box.</figcaption>
+          <figcaption>Comparison 2</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_b/image_3_comparison.png" alt="NMS comparison 3">
-          <figcaption>Example 3 — my NMS and PyTorch NMS keep identical sets of detections.</figcaption>
+          <figcaption>Comparison 3</figcaption>
         </figure>
       </div>
       <div class="grid two">
         <figure class="card">
           <img src="./media/part_b/image_4_comparison.png" alt="NMS comparison 4">
-          <figcaption>Example 4 — edge case with several moderate-IoU boxes around the banana.</figcaption>
+          <figcaption>Comparison 4</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_b/image_5_comparison.png" alt="NMS comparison 5">
-          <figcaption>Example 5 — NMS removes redundant boxes while preserving the best localization.</figcaption>
+          <figcaption>Comparison 5</figcaption>
         </figure>
       </div>
       <p class="discussion">
-        In all five examples, NMS substantially reduces the number of detections and leaves a small set of
-        high-quality boxes. My implementation follows the standard greedy algorithm: sort boxes by score, keep the
-        highest scoring box, and discard any remaining boxes whose IoU with the kept box exceeds a threshold (0.5 in
-        these results). Repeating this process until no boxes remain yields a final set of detections. On these test
-        images, my NMS produces exactly the same kept indices as <code>torchvision.ops.nms</code>, which validates the
-        correctness of the implementation.
+        In most of the examples, NMS reduces the number of detections and leaves a small set of boxes. 
+        For my implementation, I used a greedy algorithm where I sorted boxes by score, kept the
+        highest scoring box(es), and discard any remaining boxes whose IoU did not meet a certain threshold. 
+        This process was repeated until no boxes remain. The most notable reductions in boxes were on images 3 and 5, with no improvements made in image 2.
+        The output of my implementation matched the output of torchvision's in all samples.
       </p>
     </section>
 
     <!-- ===== Part 2 — Discussion ===== -->
     <section id="part2-discussion">
-      <h3>Purpose &amp; Limitations of NMS</h3>
+      <h3>Purpose and Limitations</h3>
       <p class="discussion">
-        NMS is essential for detectors that output dense, overlapping predictions: without it, the model might place
-        many boxes on each object, making the final results hard to interpret and potentially inflating detection
-        counts. However, NMS is also a blunt tool. A single global IoU threshold can incorrectly suppress nearby
-        instances of the same class (for example, two bananas that overlap slightly), and running NMS independently
-        per class ignores relationships between categories. NMS also cannot fix systematic localization errors: if the
-        detector consistently predicts boxes that are slightly off-center, NMS will still keep those imperfect boxes.
-        More advanced alternatives like soft-NMS or learned box voting can alleviate some of these issues but come at
-        the cost of additional computation and complexity.
+        NMS is essential for detectors that output dense, overlapping predictions. Several overlapping predictions can make final results hard to interpret, and could possibly inflate detection counts. 
+        However, NMS is not perfect. Using a single IoU threshold can incorrectly suppress nearby
+        instances of the same class (for example, if two bananas overlap slightly), and running NMS independently
+        per class ignores relationships between categories. NMS also cannot fix localization errors. If the
+        object detector constantly predicts boxes that are slightly off center of the real object, NMS will still keep those off center boxes.
       </p>
     </section>
 
-
-    <!-- ===================== Wrap-up ===================== -->
-    <section id="discussion">
-      <h2>Summary</h2>
-      <p class="discussion">
-        This project connects three levels of visual understanding. At the lowest level, a tiny YOLO-style detector
-        learns to localize bananas from scratch, illustrating both how grid-based detectors work and how strongly they
-        can overfit to a narrow training distribution. Non-maximum suppression then cleans up the raw predictions into
-        a small set of interpretable boxes, demonstrating the importance of well-designed post-processing. Finally,
-        the HOI component (if completed) shows how modern vision–language models can reason about richer human–object
-        relationships directly from images and text, while still exhibiting systematic biases and limitations. Together,
-        these parts highlight the full pipeline from pixels to bounding boxes to higher-level semantic interactions.
-      </p>
-    </section>
   </main>
 
   <footer class="site-footer">
