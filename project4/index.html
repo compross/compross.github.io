@@ -353,195 +353,312 @@
     </section>
 
 
-    <!-- ===================== Part 2 ===================== -->
+        <!-- ===================== Part 2 ===================== -->
     <section id="part2">
-      <h2>Part 2 — Sampling, Classifier-Free Guidance, and SDEdit</h2>
+      <h2>Part 2 — Sampling, Guidance, and Image-to-Image Translation</h2>
       <p class="summary">
-        Part&nbsp;2 uses the iterative sampler to generate images from pure noise, adds classifier-free
-        guidance (CFG) to improve visual quality, and then applies the model to image-to-image
-        translation via SDEdit, including edits on my own photographs.
+        In Part&nbsp;2 I use the diffusion model purely generatively. First I sample images from
+        random noise, then I apply classifier-free guidance (CFG) to boost image quality, and
+        finally I perform SDEdit-style image-to-image translation on both a provided test image and
+        two of my own photos.
       </p>
     </section>
 
-    <!-- ===== Part 2.1 — Sampling from Noise ===== -->
+    <!-- ===== Part 2.1 — Diffusion Model Sampling ===== -->
     <section id="part2-sampling">
-      <h3>2.1 Sampling from Random Noise</h3>
+      <h3>2.1 Diffusion Model Sampling from Noise</h3>
       <p class="summary">
-        Starting from random Gaussian noise at the Stage&nbsp;1 resolution, I run the
-        <code>iterative_denoise</code> pipeline with <em>"a high quality photo"</em> as the text
-        condition. This produces unconditional samples from the learned image distribution.
+        Using the <code>iterative_denoise</code> routine from Part&nbsp;1, I start from pure
+        Gaussian noise and denoise all the way to <code>t = 0</code> with the prompt
+        <em>"a high quality photo"</em>. The model gradually transforms random noise into coherent
+        natural images.
       </p>
+
       <div class="grid five">
         <figure class="card">
-          <img src="./media/part2/sampling_sample1.png" alt="Sample 1 from noise">
-          <figcaption>Sample 1 generated from pure noise.</figcaption>
+          <img src="./media/part_c/2.1/sample_1.png" alt="Sampled image 1">
+          <figcaption>Sample 1</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part2/sampling_sample2.png" alt="Sample 2 from noise">
-          <figcaption>Sample 2 generated from pure noise.</figcaption>
+          <img src="./media/part_c/2.1/sample_2.png" alt="Sampled image 2">
+          <figcaption>Sample 2</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part2/sampling_sample3.png" alt="Sample 3 from noise">
-          <figcaption>Sample 3 generated from pure noise.</figcaption>
+          <img src="./media/part_c/2.1/sample_3.png" alt="Sampled image 3">
+          <figcaption>Sample 3</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part2/sampling_sample4.png" alt="Sample 4 from noise">
-          <figcaption>Sample 4 generated from pure noise.</figcaption>
+          <img src="./media/part_c/2.1/sample_4.png" alt="Sampled image 4">
+          <figcaption>Sample 4</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part2/sampling_sample5.png" alt="Sample 5 from noise">
-          <figcaption>Sample 5 generated from pure noise.</figcaption>
+          <img src="./media/part_c/2.1/sample_5.png" alt="Sampled image 5">
+          <figcaption>Sample 5</figcaption>
         </figure>
       </div>
+
       <p class="discussion">
-        Without guidance, the samples are diverse but sometimes lack crisp structure or clear focal
-        points. This is expected: the model is encouraged to match the overall data distribution, not
-        any specific concept. In the next section, classifier-free guidance trades some diversity for
-        more visually striking images.
+        Even without explicit class labels, the model generates diverse, realistic-looking scenes
+        from pure noise. Some samples are more coherent than others, but overall the textures,
+        lighting, and global structure reflect that the UNet has learned a powerful prior over
+        natural images.
       </p>
     </section>
 
-    <!-- ===== Part 2.2 — Classifier-Free Guidance ===== -->
+    <!-- ===== Part 2.2 — Classifier-Free Guidance (CFG) ===== -->
     <section id="part2-cfg">
       <h3>2.2 Classifier-Free Guidance (CFG)</h3>
       <p class="summary">
-        I implement <code>iterative_denoise_cfg</code>, which combines conditional and unconditional
-        noise estimates <code>&epsilon<sub>c</sub></code> and <code>&epsilon<sub>u</sub></code> as
-        <code>&epsilon = &epsilon<sub>u</sub> + γ(&epsilon<sub>c</sub> − &epsilon<sub>u</sub>)</code>.
-        I then sample images for <em>"a high quality photo"</em> with guidance scale
-        <code>γ = 7</code>.
+        Next I implement <code>iterative_denoise_cfg</code>, which combines conditional and
+        unconditional noise predictions using classifier-free guidance. I use the same
+        <em>"a high quality photo"</em> prompt but now apply a guidance scale of
+        <code>&gamma; = 7</code> to sharpen the samples.
       </p>
+
       <div class="grid five">
         <figure class="card">
-          <img src="./media/part2/cfg_sample1.png" alt="CFG sample 1">
-          <figcaption>CFG sample 1 with <code>γ = 7</code>.</figcaption>
+          <img src="./media/part_c/2.2/cfg_sample_1.png" alt="CFG sample 1">
+          <figcaption>CFG Sample 1 (γ = 7)</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part2/cfg_sample2.png" alt="CFG sample 2">
-          <figcaption>CFG sample 2 with <code>γ = 7</code>.</figcaption>
+          <img src="./media/part_c/2.2/cfg_sample_2.png" alt="CFG sample 2">
+          <figcaption>CFG Sample 2 (γ = 7)</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part2/cfg_sample3.png" alt="CFG sample 3">
-          <figcaption>CFG sample 3 with <code>γ = 7</code>.</figcaption>
+          <img src="./media/part_c/2.2/cfg_sample_3.png" alt="CFG sample 3">
+          <figcaption>CFG Sample 3 (γ = 7)</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part2/cfg_sample4.png" alt="CFG sample 4">
-          <figcaption>CFG sample 4 with <code>γ = 7</code>.</figcaption>
+          <img src="./media/part_c/2.2/cfg_sample_4.png" alt="CFG sample 4">
+          <figcaption>CFG Sample 4 (γ = 7)</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part2/cfg_sample5.png" alt="CFG sample 5">
-          <figcaption>CFG sample 5 with <code>γ = 7</code>.</figcaption>
+          <img src="./media/part_c/2.2/cfg_sample_5.png" alt="CFG sample 5">
+          <figcaption>CFG Sample 5 (γ = 7)</figcaption>
         </figure>
       </div>
+
       <p class="discussion">
-        Compared to unguided sampling, CFG significantly sharpens edges and encourages stronger,
-        more coherent global structure (for example, clearer subjects and backgrounds). However,
-        high guidance values can sometimes over-constrain the model and reduce diversity or introduce
-        saturation artifacts. I found <code>γ = 7</code> to be a good trade-off for this project.
+        Compared to the unguided samples, CFG images are noticeably sharper and more consistent:
+        edges are cleaner, objects look more “intentional,” and backgrounds contain fewer random
+        artifacts. The trade-off is reduced diversity—different runs tend to converge to similar
+        styles and compositions as the model is pushed harder toward high-likelihood regions.
       </p>
     </section>
 
     <!-- ===== Part 2.3 — Image-to-Image Translation (SDEdit) ===== -->
     <section id="part2-sdedit">
-      <h3>2.3 Image-to-Image Translation with SDEdit</h3>
+      <h3>2.3 Image-to-Image Translation (SDEdit)</h3>
       <p class="summary">
-        In this section I apply SDEdit: I add noise to existing images (the provided test image and
-        two of my own photos) and then denoise them with <code>iterative_denoise_cfg</code>. By
-        changing how many denoising steps we run (or equivalently, where we start in the schedule),
-        we control how large the “edit” is: small edits preserve structure closely, while larger edits
-        push the image toward a new but related sample.
+        Finally, I use the SDEdit-style procedure: start from a real image, add noise to a chosen
+        timestep, and then run CFG denoising back to <code>t = 0</code>. With low noise, the output
+        stays close to the original; with high noise, the model “reimagines” the scene while
+        preserving some coarse structure.
       </p>
-      <h4>Test Image Edits</h4>
-      <div class="grid four">
+
+      <!-- Provided test image edits -->
+      <h4>Edits of the Provided Test Image</h4>
+      <div class="grid seven">
         <figure class="card">
-          <img src="./media/part2/sdedit_test_original.png" alt="Original test image for SDEdit">
-          <figcaption>Original test image (no noise).</figcaption>
+          <img src="./media/part_c/2.3/original.png" alt="Original test image for SDEdit">
+          <figcaption>Original test image.</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part2/sdedit_test_i1.png" alt="Test image edit i_start=1">
-          <figcaption>Test image edit with <code>i_start = 1</code> (very light edit).</figcaption>
+          <img src="./media/part_c/2.3/i_1.png" alt="Edit starting at 1 step">
+          <figcaption>i_start = 1</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part2/sdedit_test_i7.png" alt="Test image edit i_start=7">
-          <figcaption><code>i_start = 7</code>; more creative drift while preserving composition.</figcaption>
+          <img src="./media/part_c/2.3/i_3.png" alt="Edit starting at 3 steps">
+          <figcaption>i_start = 3</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part2/sdedit_test_i20.png" alt="Test image edit i_start=20">
-          <figcaption><code>i_start = 20</code>; large edits, image resembles a new sample.</figcaption>
+          <img src="./media/part_c/2.3/i_5.png" alt="Edit starting at 5 steps">
+          <figcaption>i_start = 5</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_c/2.3/i_7.png" alt="Edit starting at 7 steps">
+          <figcaption>i_start = 7</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_c/2.3/i_10.png" alt="Edit starting at 10 steps">
+          <figcaption>i_start = 10</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_c/2.3/i_20.png" alt="Edit starting at 20 steps">
+          <figcaption>i_start = 20</figcaption>
         </figure>
       </div>
 
-      <h4>Edits on My Own Photographs</h4>
-      <div class="grid four">
+      <p class="discussion">
+        As the starting index <code>i_start</code> increases (meaning we add more noise before
+        denoising), the output gradually drifts away from the original. Low values like
+        <code>i_start = 1</code> mostly perform mild cleanup, while high values such as
+        <code>i_start = 20</code> produce a new image that shares only loose structure and color
+        palette with the input.
+      </p>
+
+      <!-- DC photo edits -->
+      <h4>Edits of My Own Image 1 — Washington, D.C.</h4>
+      <p class="summary">
+        I repeat the same SDEdit procedure for a personal photo taken in Washington, D.C.
+        The first row shows the original image and its noisy-start edits at different
+        <code>i_start</code> values.
+      </p>
+
+      <div class="grid seven">
         <figure class="card">
-          <img src="./media/part2/sdedit_dc_original.png" alt="My DC photo original">
-          <figcaption>My own DC image (original).</figcaption>
+          <img src="./media/part_c/2.3/dc_original.png" alt="Original DC image (rescaled)">
+          <figcaption>Rescaled DC original.</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part2/sdedit_dc_i10.png" alt="My DC photo SDEdit result">
-          <figcaption>DC image SDEdit result (<code>i_start = 10</code>), then upsampled to 256&times;256.</figcaption>
+          <img src="./media/part_c/2.3/dc_1.png" alt="DC edit i_start=1">
+          <figcaption>i_start = 1</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part2/sdedit_fuji_original.png" alt="My Fuji photo original">
-          <figcaption>My own Mount Fuji image (original).</figcaption>
+          <img src="./media/part_c/2.3/dc_3.png" alt="DC edit i_start=3">
+          <figcaption>i_start = 3</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part2/sdedit_fuji_i10.png" alt="My Fuji photo SDEdit result">
-          <figcaption>Fuji image SDEdit result (<code>i_start = 10</code>), then upsampled to 256&times;256.</figcaption>
+          <img src="./media/part_c/2.3/dc_5.png" alt="DC edit i_start=5">
+          <figcaption>i_start = 5</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_c/2.3/dc_7.png" alt="DC edit i_start=7">
+          <figcaption>i_start = 7</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_c/2.3/dc_10.png" alt="DC edit i_start=10">
+          <figcaption>i_start = 10</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_c/2.3/dc_20.png" alt="DC edit i_start=20">
+          <figcaption>i_start = 20</figcaption>
         </figure>
       </div>
+
+      <div class="grid two">
+        <figure class="card">
+          <img src="./media/part_c/2.3/dc.jpeg" alt="Original full-resolution DC photo">
+          <figcaption>Original full-resolution DC photo.</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_c/2.3/dc_fake.png" alt="DC SDEdit + upsampled to 256x256">
+          <figcaption>
+            Final SDEdit result upsampled to 256×256 via Stage&nbsp;2 (<code>dc_fake.png</code>).
+          </figcaption>
+        </figure>
+      </div>
+
+      <!-- Fuji photo edits -->
+      <h4>Edits of My Own Image 2 — Mount Fuji</h4>
+      <p class="summary">
+        I also apply SDEdit to a photo of Mount Fuji. Again, higher <code>i_start</code> values
+        encourage the model to reinterpret the scene while keeping the overall composition.
+      </p>
+
+      <div class="grid seven">
+        <figure class="card">
+          <img src="./media/part_c/2.3/fuji_original.png" alt="Original Fuji image (rescaled)">
+          <figcaption>Rescaled Fuji original.</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_c/2.3/fuji_1.png" alt="Fuji edit i_start=1">
+          <figcaption>i_start = 1</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_c/2.3/fuji_3.png" alt="Fuji edit i_start=3">
+          <figcaption>i_start = 3</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_c/2.3/fuji_5.png" alt="Fuji edit i_start=5">
+          <figcaption>i_start = 5</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_c/2.3/fuji_7.png" alt="Fuji edit i_start=7">
+          <figcaption>i_start = 7</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_c/2.3/fuji_10.png" alt="Fuji edit i_start=10">
+          <figcaption>i_start = 10</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_c/2.3/fuji_20.png" alt="Fuji edit i_start=20">
+          <figcaption>i_start = 20</figcaption>
+        </figure>
+      </div>
+
+      <div class="grid two">
+        <figure class="card">
+          <img src="./media/part_c/2.3/fuji.JPG" alt="Original full-resolution Fuji photo">
+          <figcaption>Original full-resolution Fuji photo.</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_c/2.3/fuji_fake.png" alt="Fuji SDEdit + upsampled to 256x256">
+          <figcaption>
+            Final SDEdit result upsampled to 256×256 via Stage&nbsp;2 (<code>fuji_fake.png</code>).
+          </figcaption>
+        </figure>
+      </div>
+
       <p class="discussion">
-        With small noise levels, the SDEdit outputs look like lightly stylized versions of the
-        originals: lighting, textures, and minor details change while the global layout stays the
-        same. As I increase the starting noise level, the model becomes more “creative” and the
-        outputs eventually resemble new scenes that merely echo the composition of the inputs.
-        On my own photos, this gives a neat way to transform real-world shots into painterly,
-        model-generated interpretations.
+        On both personal photos, low-noise edits act like a learned “photo filter,” cleaning up
+        noise while preserving most structure. As the noise level increases, the model keeps the
+        rough layout (sky vs. ground, horizon lines, silhouettes) but freely invents textures,
+        lighting, and fine details. Upsampling the 64×64 outputs with the Stage&nbsp;2 model
+        produces sharper 256×256 images that look more like stylized paintings of the original
+        scenes than literal reconstructions.
       </p>
     </section>
 
-    <!-- ===================== Part 3 ===================== -->
+
+        <!-- ===================== Part 3 ===================== -->
     <section id="part3">
       <h2>Part 3 — Visual Anagrams</h2>
       <p class="summary">
-        For the graduate-level component, I implement visual anagrams based on the CVPR&nbsp;2024
-        paper. The goal is to generate a single image that looks like one prompt when viewed
-        upright and another when flipped upside down, by combining noise estimates from two
-        differently conditioned UNet passes.
+        In the final part of the project, I implement the <em>Visual Anagrams</em> technique
+        (CVPR&nbsp;2024). The goal is to create a single image that looks like one subject when
+        upright, but reveals a completely different subject when flipped upside down.
+        This is achieved by denoising an image using two different prompts simultaneously:
+        one with the upright image, and another with a vertically flipped version of the same
+        noisy image. Their predicted noise estimates are averaged together at each diffusion
+        step, producing an “ambiguous” image that resolves differently depending on orientation.
+      </p>
+
+      <h3>3.1 Old Man and Campfire Illusion</h3>
+      <p class="summary">
+        I use the prompts <em>"an oil painting of an old man"</em> and
+        <em>"an oil painting of people around a campfire"</em>.
+        The model begins from pure noise and iteratively denoises using
+        orientation-specific noise predictions. The result is a single image that
+        changes identity depending on its orientation.
+      </p>
+
+      <div class="grid two">
+        <figure class="card">
+          <img src="./media/part_d/old_man.png" alt="Visual anagram upright (old man)">
+          <figcaption>Upright — Appears as an old man.</figcaption>
+        </figure>
+
+        <figure class="card">
+          <img src="./media/part_d/fire.png" alt="Visual anagram flipped (campfire)">
+          <figcaption>Flipped — Appears as a campfire scene.</figcaption>
+        </figure>
+      </div>
+
+      <p class="discussion">
+        The illusion works because the model learns to encode features supporting both prompts
+        simultaneously. When upright, facial structure and lighting cues dominate, producing the
+        impression of an old man. When the image is flipped, the same patterns reinterpret as a
+        campfire glow, figures, and surrounding scenery. This dual-interpretation property is a
+        direct result of averaging the two denoising paths during sampling.
+      </p>
+
+      <p class="summary">
+        Although only one illusion is required for this project, the same method can be used
+        to create many other reversible images with different pairings of artistic prompts.
       </p>
     </section>
 
-    <!-- ===== Part 3 — Old Man / Campfire Illusion ===== -->
-    <section id="part3-anagram-main">
-      <h3>Visual Anagram: Old Man &amp; Campfire</h3>
-      <p class="summary">
-        I construct an image that resembles <em>"an oil painting of an old man"</em> when upright
-        and <em>"an oil painting of people around a campfire"</em> when flipped. At each diffusion
-        step, I:
-      </p>
-      <ul>
-        <li>Denoise <code>x<sub>t</sub></code> with prompt <code>p₁</code> (old man) to get <code>&epsilon₁</code>.</li>
-        <li>Flip <code>x<sub>t</sub></code>, denoise with prompt <code>p₂</code> (campfire), and flip the output back to get <code>&epsilon₂</code>.</li>
-        <li>Average the noise estimates <code>&epsilon = (&epsilon₁ + &epsilon₂)/2</code> and perform one reverse diffusion step.</li>
-      </ul>
-      <div class="grid two">
-        <figure class="card">
-          <img src="./media/part3/anagram_oldman_upright_256.png" alt="Upright">
-          <figcaption>Upright image of an old man.</figcaption>
-        </figure>
-        <figure class="card">
-          <img src="./media/part3/anagram_oldman_flipped_256.png" alt="Flipped">
-          <figcaption>Flipped image of a man behind a fire.</figcaption>
-        </figure>
-      </div>
-      <p class="discussion">
-        The illusion works because local features can be interpreted in two different ways depending
-        on orientation. By averaging noise estimates conditioned on two prompts, the sampler finds
-        a compromise that is consistent with both descriptions. Getting a strong illusion requires
-        some trial-and-error: different random seeds and guidance strengths can produce images that
-        favor one prompt more than the other.
-      </p>
-    </section>
 
 
   </main>
