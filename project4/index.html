@@ -109,13 +109,14 @@
     </section>
 
 
-    <!-- ===================== Part 1 ===================== -->
+        <!-- ===================== Part 1 ===================== -->
     <section id="part1">
       <h2>Part 1 — Forward &amp; Reverse Processes</h2>
       <p class="summary">
-        Part&nbsp;1 focuses on understanding how diffusion models add and remove noise. I implement
-        the forward noising process, experiment with traditional Gaussian blur denoising, and then use
-        a pretrained UNet and an iterative sampler to recover images from increasingly noisy inputs.
+        Part&nbsp;1 focuses on how diffusion models add and remove noise. I first implement the
+        forward noising process, then compare traditional Gaussian denoising to a learned UNet,
+        and finally run an iterative DDPM-style reverse process starting from a highly corrupted
+        image.
       </p>
     </section>
 
@@ -123,34 +124,36 @@
     <section id="part1-forward">
       <h3>1.1 Forward Process (Adding Noise)</h3>
       <p class="summary">
-        I implement the forward process
-        <code>x<sub>t</sub> = √&alpha;̄<sub>t</sub>x<sub>0</sub> + √(1−&alpha;̄<sub>t</sub>)&epsilon;</code>,
-        where &alpha;̄<sub>t</sub> is taken from the prescribed noise schedule. The test image is
-        progressively degraded at timesteps <code>t = 250, 500, 750</code>.
+        The forward process corrupts a clean image <code>x₀</code> into a noisy version
+        <code>x<sub>t</sub></code> according to
+        <code>x<sub>t</sub> = √&alpha;̄<sub>t</sub>x₀ + √(1−&alpha;̄<sub>t</sub>)&epsilon;</code>.
+        Below I show the original image and its noised versions at
+        <code>t = 250, 500, 750</code> using the provided noise schedule
+        <code>alphas_cumprod</code>.
       </p>
       <div class="grid four">
         <figure class="card">
-          <img src="./media/part1/forward_original.png" alt="Original test image">
+          <img src="./media/part_b/original.png" alt="Original test image">
           <figcaption>Original test image <code>x₀</code>.</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part1/forward_t250.png" alt="Noisy image t=250">
-          <figcaption>Noisy image at <code>t = 250</code> (moderate noise, structure still visible).</figcaption>
+          <img src="./media/part_b/t_250.png" alt="Noisy image t=250">
+          <figcaption>Noisy image at <code>t = 250</code>; content is still very recognizable.</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part1/forward_t500.png" alt="Noisy image t=500">
-          <figcaption>Noisy image at <code>t = 500</code> (heavier corruption, edges fading).</figcaption>
+          <img src="./media/part_b/t_500.png" alt="Noisy image t=500">
+          <figcaption><code>t = 500</code>; edges soften and textures start to disappear.</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part1/forward_t750.png" alt="Noisy image t=750">
-          <figcaption>Noisy image at <code>t = 750</code> (image is close to pure noise).</figcaption>
+          <img src="./media/part_b/t_750.png" alt="Noisy image t=750">
+          <figcaption><code>t = 750</code>; the image is close to pure Gaussian noise.</figcaption>
         </figure>
       </div>
       <p class="discussion">
-        As expected, smaller timesteps preserve high-level content and edges, while larger timesteps
-        push the image toward an almost Gaussian noise field. The forward process is not just additive
-        noise: the signal is also scaled by <code>√&alpha;̄<sub>t</sub></code>, which is important
-        for the later reverse step where we attempt to reconstruct <code>x₀</code>.
+        As <code>t</code> increases, the signal is both rescaled and mixed with noise. At medium
+        timesteps the global structure is barely visible, and by <code>t = 750</code> almost all
+        semantic information has been destroyed, which motivates the need for a strong reverse
+        process.
       </p>
     </section>
 
@@ -158,28 +161,58 @@
     <section id="part1-gaussian">
       <h3>1.2 Traditional Denoising (Gaussian Blur)</h3>
       <p class="summary">
-        I apply Gaussian blur to the noisy images at <code>t = 250, 500, 750</code>, tuning kernel
-        size and <code>σ</code> separately for each noise level to get the best possible restoration.
+        I attempt to recover the original image from the noisy versions using Gaussian blur
+        (a purely classical, non-learned method). For each timestep I show the noisy input and
+        the best Gaussian-denoised result I could obtain by tuning the blur parameters.
       </p>
-      <div class="grid three">
+
+      <h4>t = 250</h4>
+      <div class="grid two">
         <figure class="card">
-          <img src="./media/part1/gaussian_t250.png" alt="Gaussian denoise t=250">
-          <figcaption>Gaussian denoising at <code>t = 250</code>; noise reduced but edges softened.</figcaption>
+          <img src="./media/part_b/t_250.png" alt="Noisy image t=250">
+          <figcaption>Noisy image at <code>t = 250</code>.</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part1/gaussian_t500.png" alt="Gaussian denoise t=500">
-          <figcaption>Gaussian denoising at <code>t = 500</code>; textures heavily blurred.</figcaption>
-        </figure>
-        <figure class="card">
-          <img src="./media/part1/gaussian_t750.png" alt="Gaussian denoise t=750">
-          <figcaption>Gaussian denoising at <code>t = 750</code>; image mostly becomes a smooth color field.</figcaption>
+          <img src="./media/part_b/guassian_250.png" alt="Gaussian denoised t=250">
+          <figcaption>
+            Gaussian denoised at <code>t = 250</code>; some noise is removed, but edges are noticeably blurred.
+          </figcaption>
         </figure>
       </div>
+
+      <h4>t = 500</h4>
+      <div class="grid two">
+        <figure class="card">
+          <img src="./media/part_b/t_500.png" alt="Noisy image t=500">
+          <figcaption>Noisy image at <code>t = 500</code>.</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_b/guassian_500.png" alt="Gaussian denoised t=500">
+          <figcaption>
+            Gaussian denoised at <code>t = 500</code>; the image becomes smoother but also loses most fine detail.
+          </figcaption>
+        </figure>
+      </div>
+
+      <h4>t = 750</h4>
+      <div class="grid two">
+        <figure class="card">
+          <img src="./media/part_b/t_750.png" alt="Noisy image t=750">
+          <figcaption>Noisy image at <code>t = 750</code>.</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_b/guassian_750.png" alt="Gaussian denoised t=750">
+          <figcaption>
+            Gaussian denoised at <code>t = 750</code>; almost all structure is washed out into a smooth texture.
+          </figcaption>
+        </figure>
+      </div>
+
       <p class="discussion">
-        Gaussian filtering can smooth out high-frequency noise, but it does not know anything about
-        natural image structure. At low noise levels it gives a mildly usable result, but at higher
-        levels the denoised images are overly smooth and lose most semantic content. This highlights
-        why diffusion models need learned denoisers instead of relying purely on classical filters.
+        Gaussian blur can reduce high-frequency noise, but it has no knowledge of natural image
+        statistics. At low noise levels it produces passable results, but at higher timesteps it
+        simply smooths everything, destroying edges and semantics. This illustrates why diffusion
+        models rely on a learned denoiser instead of traditional filtering.
       </p>
     </section>
 
@@ -187,32 +220,65 @@
     <section id="part1-unet">
       <h3>1.3 One-Step Denoising with a Pretrained UNet</h3>
       <p class="summary">
-        Next, I use the pretrained Stage&nbsp;1 UNet to predict the noise
-        <code>ĥ&epsilon;</code> for noisy images and then reconstruct
-        <code>ĥx₀ = (x<sub>t</sub> − √(1 − &alpha;̄<sub>t</sub>) ĥ&epsilon;)/√&alpha;̄<sub>t</sub></code>.
-        This effectively performs a single reverse diffusion step conditioned on the prompt
-        <em>"a high quality photo"</em>.
+        I next use the pretrained Stage&nbsp;1 UNet (<code>stage_1.unet</code>) to predict the noise
+        in <code>x<sub>t</sub></code> and reconstruct an estimate of the clean image via
+        <code>ĥx₀ = (x<sub>t</sub> − √(1−&alpha;̄<sub>t</sub>) ĥ&epsilon;)/√&alpha;̄<sub>t</sub></code>.
+        For each timestep I show the original, the noisy input, and the one-step denoised result.
       </p>
+
+      <h4>t = 250</h4>
       <div class="grid three">
         <figure class="card">
-          <img src="./media/part1/unet_original.png" alt="Original image for UNet denoising">
-          <figcaption>Original test image.</figcaption>
+          <img src="./media/part_b/original.png" alt="Original image t=250">
+          <figcaption>Original image.</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part1/unet_noisy_t500.png" alt="Noisy image for UNet denoising">
-          <figcaption>Noisy image at <code>t = 500</code> fed into the UNet.</figcaption>
+          <img src="./media/part_b/t_250.png" alt="Noisy image t=250">
+          <figcaption>Noisy image at <code>t = 250</code>.</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part1/unet_clean_est_t500.png" alt="UNet denoised estimate">
-          <figcaption>One-step UNet estimate of <code>x₀</code> from <code>t = 500</code>.</figcaption>
+          <img src="./media/part_b/one_step_250.png" alt="One-step denoised t=250">
+          <figcaption>One-step UNet denoised result at <code>t = 250</code>.</figcaption>
         </figure>
       </div>
+
+      <h4>t = 500</h4>
+      <div class="grid three">
+        <figure class="card">
+          <img src="./media/part_b/original.png" alt="Original image t=500">
+          <figcaption>Original image.</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_b/t_500.png" alt="Noisy image t=500">
+          <figcaption>Noisy image at <code>t = 500</code>.</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_b/one_step_500.png" alt="One-step denoised t=500">
+          <figcaption>One-step UNet denoised result at <code>t = 500</code>.</figcaption>
+        </figure>
+      </div>
+
+      <h4>t = 750</h4>
+      <div class="grid three">
+        <figure class="card">
+          <img src="./media/part_b/original.png" alt="Original image t=750">
+          <figcaption>Original image.</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_b/t_750.png" alt="Noisy image t=750">
+          <figcaption>Noisy image at <code>t = 750</code>.</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_b/one_step_750.png" alt="One-step denoised t=750">
+          <figcaption>One-step UNet denoised result at <code>t = 750</code>.</figcaption>
+        </figure>
+      </div>
+
       <p class="discussion">
-        Even with a single denoising step, the UNet does a surprisingly good job reconstructing a
-        plausible image. At moderate noise levels the model can largely restore structure and textures,
-        although fine details and colors may drift away from the original. At very high noise levels,
-        the reconstruction looks more like a “hallucinated” image from the same distribution rather than
-        a faithful recovery of the exact input.
+        At moderate noise levels (e.g., <code>t = 250</code>), a single UNet pass produces a
+        surprisingly accurate reconstruction. As the noise level increases, the one-step estimate
+        still produces a plausible natural image but drifts further away from the exact original,
+        showing that multiple steps are preferable when starting from heavily corrupted inputs.
       </p>
     </section>
 
@@ -220,55 +286,72 @@
     <section id="part1-iter">
       <h3>1.4 Iterative Denoising with Strided Timesteps</h3>
       <p class="summary">
-        Finally, I implement an iterative denoising procedure that steps through a strided set of
-        timesteps from <code>t = 990</code> down to <code>t = 0</code>. At each step, I use the UNet
-        to estimate the noise and then apply a DDPM-style update rule, including learned variance
-        from the scheduler.
+        Finally, I implement an iterative reverse diffusion process using a strided schedule of
+        timesteps. Starting from a very noisy image at <code>t = 690</code>, the model repeatedly
+        predicts noise and steps toward <code>t = 0</code>, applying the DDPM update rule with
+        learned variance. Below are snapshots of the image every few iterations.
       </p>
+
+      <div class="grid six">
+        <figure class="card">
+          <img src="./media/part_b/iter_0.png" alt="Iterative denoise step 0">
+          <figcaption>Iteration 0 (starting from <code>t = 690</code>): extremely noisy.</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_b/iter_5.png" alt="Iterative denoise step 5">
+          <figcaption>Iteration 5: coarse shapes begin to emerge.</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_b/iter_10.png" alt="Iterative denoise step 10">
+          <figcaption>Iteration 10: major structures are visible.</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_b/iter_15.png" alt="Iterative denoise step 15">
+          <figcaption>Iteration 15: edges and textures sharpen.</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_b/iter_20.png" alt="Iterative denoise step 20">
+          <figcaption>Iteration 20: image is close to a clean sample.</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="./media/part_b/iter_22.png" alt="Iterative denoise final">
+          <figcaption>Iteration 22: final iterative denoised image.</figcaption>
+        </figure>
+      </div>
+
+      <h4>Final Comparison at t = 690</h4>
       <div class="grid five">
         <figure class="card">
-          <img src="./media/part1/iter_step0.png" alt="Iterative denoise early step">
-          <figcaption>Early denoising step (very noisy, structure just starting to emerge).</figcaption>
+          <img src="./media/part_b/original.png" alt="Original image">
+          <figcaption>Original clean image.</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part1/iter_step5.png" alt="Iterative denoise mid step">
-          <figcaption>After several steps; shapes and rough layout become visible.</figcaption>
+          <img src="./media/part_b/t_690.png" alt="Noisy image t=690">
+          <figcaption>Noisy image at <code>t = 690</code> (starting point).</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part1/iter_step10.png" alt="Iterative denoise later step">
-          <figcaption>Later step; most high-level content is recognizable.</figcaption>
+          <img src="./media/part_b/iterative_690.png" alt="Iterative denoise result">
+          <figcaption>Iterative denoising result (multiple DDPM steps).</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part1/iter_step15.png" alt="Iterative denoise near end">
-          <figcaption>Near the end of the schedule; details are refined.</figcaption>
+          <img src="./media/part_b/one_step_690.png" alt="One-step denoise result">
+          <figcaption>One-step UNet denoise from <code>t = 690</code>.</figcaption>
         </figure>
         <figure class="card">
-          <img src="./media/part1/iter_final.png" alt="Final iterative denoise result">
-          <figcaption>Final <code>x₀</code> estimate from iterative denoising.</figcaption>
+          <img src="./media/part_b/guassian_690.png" alt="Gaussian blur result">
+          <figcaption>Gaussian blur baseline from <code>t = 690</code>.</figcaption>
         </figure>
       </div>
-      <div class="grid three">
-        <figure class="card">
-          <img src="./media/part1/iter_vs_one_step.png" alt="Iterative vs one-step comparison">
-          <figcaption>Iterative denoising vs. one-step UNet reconstruction.</figcaption>
-        </figure>
-        <figure class="card">
-          <img src="./media/part1/iter_vs_gaussian.png" alt="Iterative vs Gaussian blur">
-          <figcaption>Iterative denoising vs. Gaussian blur baseline.</figcaption>
-        </figure>
-        <figure class="card">
-          <img src="./media/part1/noisy_t_strided.png" alt="Initial noisy image at strided timestep">
-          <figcaption>Noisy starting point at <code>t =</code> strided_timesteps[10].</figcaption>
-        </figure>
-      </div>
+
       <p class="discussion">
-        Showing the image every 5th loop illustrates how the diffusion model gradually pushes the
-        sample back toward the natural image manifold. The iterative sampler produces much more
-        coherent and detailed images than the one-step reconstruction, particularly when starting
-        from highly corrupted inputs. Compared to Gaussian blur, the diffusion-based method preserves
-        edges, textures, and semantic structure while still removing noise.
+        The sequence of iterated images shows the diffusion model gradually pulling the sample back
+        onto the natural image manifold. Compared to the one-step UNet and Gaussian blur, iterative
+        denoising produces the cleanest and most coherent result, especially when starting from a
+        very noisy state. The Gaussian version is overly smooth and loses structure, while the
+        one-step UNet tends to under-correct large amounts of noise.
       </p>
     </section>
+
 
     <!-- ===================== Part 2 ===================== -->
     <section id="part2">
