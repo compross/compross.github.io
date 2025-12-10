@@ -29,82 +29,71 @@
     <section id="part0">
       <h2>Part 0 — Setup & Effect of Sampling Steps</h2>
       <p class="summary">
-        In Part&nbsp;0 I set up the DeepFloyd IF pipeline on Hugging Face, loaded the provided
-        prompt embeddings, and generated images for the three given prompts:
+        I set up the DeepFloyd IF pipeline on Hugging Face, loaded the provided
+        prompt embeddings, and generated images for three given prompts:
         <em>"a rocket ship"</em>,
         <em>"an oil painting of a snowy mountain village"</em>, and
         <em>"a man wearing a hat"</em>.
         For each prompt I compare samples generated with a small number of denoising steps
         (<code>num_inference_steps = 5</code>) and a larger number of steps
-        (<code>num_inference_steps = 20</code>) using the same random seed.
-        This highlights the speed–quality trade-off in diffusion sampling.
+        (<code>num_inference_steps = 20</code>) using the same random seed (180).
       </p>
 
       <!-- ===== Rocket Ship Samples ===== -->
-      <h3>Rocket Ship — 5 vs 20 Sampling Steps</h3>
+      <h3>Rocket Ship</h3>
       <div class="grid two">
         <figure class="card">
           <img src="./media/part_a/rocket_5.png" alt="Rocket ship with 5 sampling steps">
           <figcaption>
-            <strong>5 steps:</strong> The overall rocket shape is visible, but the scene is very noisy
-            and grainy. Background structure is muddled and fine details are poorly defined.
+            <strong>5 steps:</strong> The rocket is visible, but the image grainy and still has a lot of noise.
           </figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_a/rocket_20.png" alt="Rocket ship with 20 sampling steps">
           <figcaption>
-            <strong>20 steps:</strong> The rocket is crisp with clean edges, smooth gradients, and
-            clear light sources. Increasing the number of steps greatly improves coherence and detail.
+            <strong>20 steps:</strong> The rocket is much more clear, and the overall image is much more crisp.
           </figcaption>
         </figure>
       </div>
 
       <!-- ===== Snowy Village Samples ===== -->
-      <h3>Snowy Mountain Village — 5 vs 20 Sampling Steps</h3>
+      <h3>Snowy Mountain Village</h3>
       <div class="grid two">
         <figure class="card">
           <img src="./media/part_a/oil_painting_5.png" alt="Snowy village with 5 sampling steps">
           <figcaption>
-            <strong>5 steps:</strong> The village is only loosely defined; buildings and trees blur
-            into a textured pointillist pattern. The scene feels abstract and lacks clear depth.
+            <strong>5 steps:</strong> The village is extremely blurry, and it is hard to make out any fine details.
           </figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_a/oil_painting_20.png" alt="Snowy village with 20 sampling steps">
           <figcaption>
-            <strong>20 steps:</strong> Houses, trees, and snow banks are sharp and stylized, with
-            strong color contrasts and readable geometry. Longer sampling recovers a much more
-            coherent landscape.
-          </figcaption>
+            <strong>20 steps:</strong> All parts of the image are very sharp and are stylized. You can easily see many fine details of the painting.
         </figure>
       </div>
 
       <!-- ===== Man Wearing a Hat Samples ===== -->
-      <h3>Man Wearing a Hat — 5 vs 20 Sampling Steps</h3>
+      <h3>Man Wearing a Hat</h3>
       <div class="grid two">
         <figure class="card">
           <img src="./media/part_a/man_5.png" alt="Man in hat with 5 sampling steps">
           <figcaption>
-            <strong>5 steps:</strong> The portrait is heavily textured and stylized, with facial
-            features still recognizable but soft and noisy. The image looks more like a rough
-            pointillist painting.
+            <strong>5 steps:</strong> The portrait is very stylized and is extremely grainy other than the man's face.
           </figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_a/man_20.png" alt="Man in hat with 20 sampling steps">
           <figcaption>
-            <strong>20 steps:</strong> The face, hat, and clothing are sharply defined and realistic.
-            Noise is largely removed, and lighting and shading look much more natural.
+            <strong>20 steps:</strong> All parts of the image are very realistic.
           </figcaption>
         </figure>
       </div>
 
       <p class="discussion">
         Across all three prompts, using only <code>5</code> denoising steps produces quick but noisy
-        outputs with blurred edges and unstable structure. Increasing to
-        <code>20</code> steps substantially improves global coherence and fine detail, but at the
-        cost of additional compute time. For the remainder of the project I use a moderate number of
-        sampling steps to balance runtime with visual quality.
+        outputs. Increasing to
+        <code>20</code> steps substantially improves the image, but at the
+        cost of additional compute time. 
       </p>
     </section>
 
@@ -115,8 +104,7 @@
       <p class="summary">
         Part&nbsp;1 focuses on how diffusion models add and remove noise. I first implement the
         forward noising process, then compare traditional Gaussian denoising to a learned UNet,
-        and finally run an iterative DDPM-style reverse process starting from a highly corrupted
-        image.
+        and finally run an iterative reverse process.
       </p>
     </section>
 
@@ -138,22 +126,20 @@
         </figure>
         <figure class="card">
           <img src="./media/part_b/t_250.png" alt="Noisy image t=250">
-          <figcaption>Noisy image at <code>t = 250</code>; content is still very recognizable.</figcaption>
+          <figcaption>Noisy image at <code>t = 250</code></figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_b/t_500.png" alt="Noisy image t=500">
-          <figcaption><code>t = 500</code>; edges soften and textures start to disappear.</figcaption>
+          <figcaption><code>t = 500</code></figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_b/t_750.png" alt="Noisy image t=750">
-          <figcaption><code>t = 750</code>; the image is close to pure Gaussian noise.</figcaption>
+          <figcaption><code>t = 750</code></figcaption>
         </figure>
       </div>
       <p class="discussion">
         As <code>t</code> increases, the signal is both rescaled and mixed with noise. At medium
-        timesteps the global structure is barely visible, and by <code>t = 750</code> almost all
-        semantic information has been destroyed, which motivates the need for a strong reverse
-        process.
+        timesteps the global structure is barely visible, and by <code>t = 750</code> the image is almost unrecognizable.
       </p>
     </section>
 
@@ -161,8 +147,8 @@
     <section id="part1-gaussian">
       <h3>1.2 Traditional Denoising (Gaussian Blur)</h3>
       <p class="summary">
-        I attempt to recover the original image from the noisy versions using Gaussian blur
-        (a purely classical, non-learned method). For each timestep I show the noisy input and
+        I attempted to recover the original image from the noisy versions using Gaussian blur.
+        For each timestep I show the noisy input and
         the best Gaussian-denoised result I could obtain by tuning the blur parameters.
       </p>
 
@@ -175,7 +161,7 @@
         <figure class="card">
           <img src="./media/part_b/guassian_250.png" alt="Gaussian denoised t=250">
           <figcaption>
-            Gaussian denoised at <code>t = 250</code>; some noise is removed, but edges are noticeably blurred.
+            Gaussian denoised at <code>t = 250</code>
           </figcaption>
         </figure>
       </div>
@@ -189,7 +175,7 @@
         <figure class="card">
           <img src="./media/part_b/guassian_500.png" alt="Gaussian denoised t=500">
           <figcaption>
-            Gaussian denoised at <code>t = 500</code>; the image becomes smoother but also loses most fine detail.
+            Gaussian denoised at <code>t = 500</code>
           </figcaption>
         </figure>
       </div>
@@ -203,24 +189,24 @@
         <figure class="card">
           <img src="./media/part_b/guassian_750.png" alt="Gaussian denoised t=750">
           <figcaption>
-            Gaussian denoised at <code>t = 750</code>; almost all structure is washed out into a smooth texture.
+            Gaussian denoised at <code>t = 750</code>
           </figcaption>
         </figure>
       </div>
 
       <p class="discussion">
         Gaussian blur can reduce high-frequency noise, but it has no knowledge of natural image
-        statistics. At low noise levels it produces passable results, but at higher timesteps it
-        simply smooths everything, destroying edges and semantics. This illustrates why diffusion
-        models rely on a learned denoiser instead of traditional filtering.
+        statistics. At very low noise levels it might produce a somewhat passable result, but at higher timesteps it
+        simply smooths everything. For any of these examples, a diffusion model would be necessary, as none of the results I would deem passable.
+        
       </p>
     </section>
 
     <!-- ===== Part 1.3 — One-Step UNet Denoising ===== -->
     <section id="part1-unet">
-      <h3>1.3 One-Step Denoising with a Pretrained UNet</h3>
+      <h3>1.3 One-Step Denoising</h3>
       <p class="summary">
-        I next use the pretrained Stage&nbsp;1 UNet (<code>stage_1.unet</code>) to predict the noise
+        I next use the pretrained Stage&nbsp;1 UNet to predict the noise
         in <code>x<sub>t</sub></code> and reconstruct an estimate of the clean image via
         <code>ĥx₀ = (x<sub>t</sub> − √(1−&alpha;̄<sub>t</sub>) ĥ&epsilon;)/√&alpha;̄<sub>t</sub></code>.
         For each timestep I show the original, the noisy input, and the one-step denoised result.
@@ -238,7 +224,7 @@
         </figure>
         <figure class="card">
           <img src="./media/part_b/one_step_250.png" alt="One-step denoised t=250">
-          <figcaption>One-step UNet denoised result at <code>t = 250</code>.</figcaption>
+          <figcaption>One-step denoised result at <code>t = 250</code>.</figcaption>
         </figure>
       </div>
 
@@ -254,7 +240,7 @@
         </figure>
         <figure class="card">
           <img src="./media/part_b/one_step_500.png" alt="One-step denoised t=500">
-          <figcaption>One-step UNet denoised result at <code>t = 500</code>.</figcaption>
+          <figcaption>One-step denoised result at <code>t = 500</code>.</figcaption>
         </figure>
       </div>
 
@@ -270,52 +256,51 @@
         </figure>
         <figure class="card">
           <img src="./media/part_b/one_step_750.png" alt="One-step denoised t=750">
-          <figcaption>One-step UNet denoised result at <code>t = 750</code>.</figcaption>
+          <figcaption>One-step denoised result at <code>t = 750</code>.</figcaption>
         </figure>
       </div>
 
       <p class="discussion">
         At moderate noise levels (e.g., <code>t = 250</code>), a single UNet pass produces a
-        surprisingly accurate reconstruction. As the noise level increases, the one-step estimate
+        decently accurate reconstruction. As the noise level increases, the one-step estimate
         still produces a plausible natural image but drifts further away from the exact original,
-        showing that multiple steps are preferable when starting from heavily corrupted inputs.
+        also causing the image to be extremely blurry, still justifying a need for multiple steps.
       </p>
     </section>
 
     <!-- ===== Part 1.4 — Iterative Denoising ===== -->
     <section id="part1-iter">
-      <h3>1.4 Iterative Denoising with Strided Timesteps</h3>
+      <h3>1.4 Iterative Denoising</h3>
       <p class="summary">
         Finally, I implement an iterative reverse diffusion process using a strided schedule of
         timesteps. Starting from a very noisy image at <code>t = 690</code>, the model repeatedly
-        predicts noise and steps toward <code>t = 0</code>, applying the DDPM update rule with
-        learned variance. Below are snapshots of the image every few iterations.
+        predicts noise and steps toward <code>t = 0</code>. Below are snapshots of the image every 5 iterations.
       </p>
 
       <div class="grid six">
         <figure class="card">
           <img src="./media/part_b/iter_0.png" alt="Iterative denoise step 0">
-          <figcaption>Iteration 0 (starting from <code>t = 690</code>): extremely noisy.</figcaption>
+          <figcaption>Iteration 0 (starting from <code>t = 690</code>)</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_b/iter_5.png" alt="Iterative denoise step 5">
-          <figcaption>Iteration 5: coarse shapes begin to emerge.</figcaption>
+          <figcaption>Iteration 5</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_b/iter_10.png" alt="Iterative denoise step 10">
-          <figcaption>Iteration 10: major structures are visible.</figcaption>
+          <figcaption>Iteration 10</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_b/iter_15.png" alt="Iterative denoise step 15">
-          <figcaption>Iteration 15: edges and textures sharpen.</figcaption>
+          <figcaption>Iteration 15</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_b/iter_20.png" alt="Iterative denoise step 20">
-          <figcaption>Iteration 20: image is close to a clean sample.</figcaption>
+          <figcaption>Iteration 20</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_b/iter_22.png" alt="Iterative denoise final">
-          <figcaption>Iteration 22: final iterative denoised image.</figcaption>
+          <figcaption>Iteration 22</figcaption>
         </figure>
       </div>
 
@@ -327,15 +312,15 @@
         </figure>
         <figure class="card">
           <img src="./media/part_b/t_690.png" alt="Noisy image t=690">
-          <figcaption>Noisy image at <code>t = 690</code> (starting point).</figcaption>
+          <figcaption>Noisy image at <code>t = 690</code>.</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_b/iterative_690.png" alt="Iterative denoise result">
-          <figcaption>Iterative denoising result (multiple DDPM steps).</figcaption>
+          <figcaption>Iterative denoising result.</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_b/one_step_690.png" alt="One-step denoise result">
-          <figcaption>One-step UNet denoise from <code>t = 690</code>.</figcaption>
+          <figcaption>One-step denoise from <code>t = 690</code>.</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_b/guassian_690.png" alt="Gaussian blur result">
@@ -344,22 +329,21 @@
       </div>
 
       <p class="discussion">
-        The sequence of iterated images shows the diffusion model gradually pulling the sample back
-        onto the natural image manifold. Compared to the one-step UNet and Gaussian blur, iterative
+        The sequence of iterated images shows the diffusion model gradually improving as steps progress. Compared to the one-step and Gaussian blur, iterative
         denoising produces the cleanest and most coherent result, especially when starting from a
         very noisy state. The Gaussian version is overly smooth and loses structure, while the
-        one-step UNet tends to under-correct large amounts of noise.
+        one-step tends to miss out on more fine details (as seen with the trees and surrounding structure).
       </p>
     </section>
 
 
         <!-- ===================== Part 2 ===================== -->
     <section id="part2">
-      <h2>Part 2 — Sampling, Guidance, and Image-to-Image Translation</h2>
+      <h2>Part 2 — Understanding the Forward & Reverse Processes</h2>
       <p class="summary">
-        In Part&nbsp;2 I use the diffusion model purely generatively. First I sample images from
+        In Part&nbsp;2 I use the diffusion model generatively. First I sample images from
         random noise, then I apply classifier-free guidance (CFG) to boost image quality, and
-        finally I perform SDEdit-style image-to-image translation on both a provided test image and
+        finally I perform image-to-image translation on both a provided test image and
         two of my own photos.
       </p>
     </section>
@@ -371,7 +355,7 @@
         Using the <code>iterative_denoise</code> routine from Part&nbsp;1, I start from pure
         Gaussian noise and denoise all the way to <code>t = 0</code> with the prompt
         <em>"a high quality photo"</em>. The model gradually transforms random noise into coherent
-        natural images.
+        images.
       </p>
 
       <div class="grid five">
@@ -398,10 +382,8 @@
       </div>
 
       <p class="discussion">
-        Even without explicit class labels, the model generates diverse, realistic-looking scenes
-        from pure noise. Some samples are more coherent than others, but overall the textures,
-        lighting, and global structure reflect that the UNet has learned a powerful prior over
-        natural images.
+        Even without explicit class labels, the model generates very good images from pure noise. Some samples are more coherent than others, but overall the textures,
+        lighting, and global structure help show how good the model is.
       </p>
     </section>
 
@@ -410,7 +392,7 @@
       <h3>2.2 Classifier-Free Guidance (CFG)</h3>
       <p class="summary">
         Next I implement <code>iterative_denoise_cfg</code>, which combines conditional and
-        unconditional noise predictions using classifier-free guidance. I use the same
+        unconditional noise predictions using classifier free guidance. I use the same
         <em>"a high quality photo"</em> prompt but now apply a guidance scale of
         <code>&gamma; = 7</code> to sharpen the samples.
       </p>
@@ -418,42 +400,40 @@
       <div class="grid five">
         <figure class="card">
           <img src="./media/part_c/2.2/cfg_sample_1.png" alt="CFG sample 1">
-          <figcaption>CFG Sample 1 (γ = 7)</figcaption>
+          <figcaption>CFG Sample 1</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_c/2.2/cfg_sample_2.png" alt="CFG sample 2">
-          <figcaption>CFG Sample 2 (γ = 7)</figcaption>
+          <figcaption>CFG Sample 2</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_c/2.2/cfg_sample_3.png" alt="CFG sample 3">
-          <figcaption>CFG Sample 3 (γ = 7)</figcaption>
+          <figcaption>CFG Sample 3</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_c/2.2/cfg_sample_4.png" alt="CFG sample 4">
-          <figcaption>CFG Sample 4 (γ = 7)</figcaption>
+          <figcaption>CFG Sample 4</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_c/2.2/cfg_sample_5.png" alt="CFG sample 5">
-          <figcaption>CFG Sample 5 (γ = 7)</figcaption>
+          <figcaption>CFG Sample 5</figcaption>
         </figure>
       </div>
 
       <p class="discussion">
-        Compared to the unguided samples, CFG images are noticeably sharper and more consistent:
-        edges are cleaner, objects look more “intentional,” and backgrounds contain fewer random
-        artifacts. The trade-off is reduced diversity—different runs tend to converge to similar
-        styles and compositions as the model is pushed harder toward high-likelihood regions.
+        Compared to the unguided samples, CFG images are noticeably different, but I would not call them better.
+        It appears as though the images are much more vivid, and tend to focus on lighting and color more than anything else. 
       </p>
     </section>
 
     <!-- ===== Part 2.3 — Image-to-Image Translation (SDEdit) ===== -->
     <section id="part2-sdedit">
-      <h3>2.3 Image-to-Image Translation (SDEdit)</h3>
+      <h3>2.3 Image-to-Image Translation</h3>
       <p class="summary">
-        Finally, I use the SDEdit-style procedure: start from a real image, add noise to a chosen
+        Lastly, I use the image to image translation procedure: start from a real image, add noise to a chosen
         timestep, and then run CFG denoising back to <code>t = 0</code>. With low noise, the output
-        stays close to the original; with high noise, the model “reimagines” the scene while
-        preserving some coarse structure.
+        should stay close to the original. With high noise, the model sort of “reimagines” the scene while
+        preserving some of the main focal points.
       </p>
 
       <!-- Provided test image edits -->
@@ -490,17 +470,15 @@
       </div>
 
       <p class="discussion">
-        As the starting index <code>i_start</code> increases (meaning we add more noise before
-        denoising), the output gradually drifts away from the original. Low values like
-        <code>i_start = 1</code> mostly perform mild cleanup, while high values such as
-        <code>i_start = 20</code> produce a new image that shares only loose structure and color
-        palette with the input.
+        As the starting index <code>i_start</code> increases it appears the output gets closer to the original. Low values like
+        <code>i_start = 1</code> seem to perform abstractions on the image, while
+        <code>i_start = 20</code> seems create a similar image to the original.
       </p>
 
       <!-- DC photo edits -->
       <h4>Edits of My Own Image 1 — Washington, D.C.</h4>
       <p class="summary">
-        I repeat the same SDEdit procedure for a personal photo taken in Washington, D.C.
+        I repeat the same procedure for a personal photo taken in Washington, D.C while on a conference visit with some classmates.
         The first row shows the original image and its noisy-start edits at different
         <code>i_start</code> values.
       </p>
@@ -539,12 +517,12 @@
       <div class="grid two">
         <figure class="card">
           <img src="./media/part_c/2.3/dc.jpeg" alt="Original full-resolution DC photo">
-          <figcaption>Original full-resolution DC photo.</figcaption>
+          <figcaption>Original DC photo.</figcaption>
         </figure>
         <figure class="card">
           <img src="./media/part_c/2.3/dc_fake.png" alt="DC SDEdit + upsampled to 256x256">
           <figcaption>
-            Final SDEdit result upsampled to 256×256 via Stage&nbsp;2 (<code>dc_fake.png</code>).
+            Upscaled final result.
           </figcaption>
         </figure>
       </div>
@@ -552,8 +530,7 @@
       <!-- Fuji photo edits -->
       <h4>Edits of My Own Image 2 — Mount Fuji</h4>
       <p class="summary">
-        I also apply SDEdit to a photo of Mount Fuji. Again, higher <code>i_start</code> values
-        encourage the model to reinterpret the scene while keeping the overall composition.
+        I also applied it to a photo of my girlfriend and I in front of Mount Fuji during our visit to Japan.
       </p>
 
       <div class="grid seven">
@@ -595,18 +572,15 @@
         <figure class="card">
           <img src="./media/part_c/2.3/fuji_fake.png" alt="Fuji SDEdit + upsampled to 256x256">
           <figcaption>
-            Final SDEdit result upsampled to 256×256 via Stage&nbsp;2 (<code>fuji_fake.png</code>).
+            Upscaled final result.
           </figcaption>
         </figure>
       </div>
 
       <p class="discussion">
-        On both personal photos, low-noise edits act like a learned “photo filter,” cleaning up
-        noise while preserving most structure. As the noise level increases, the model keeps the
-        rough layout (sky vs. ground, horizon lines, silhouettes) but freely invents textures,
-        lighting, and fine details. Upsampling the 64×64 outputs with the Stage&nbsp;2 model
-        produces sharper 256×256 images that look more like stylized paintings of the original
-        scenes than literal reconstructions.
+        On both personal photos, it once again appears that lower values of i_start seem to make the results more abstract and further from the originals.
+        Although the final result for the DC image is questionable, by i_start = 20 for the Mt. Fuji image, the model seems to reconstruct and image of a couple standing in front of a mountain.
+        The first few images however seem to have nothing to do with the original.
       </p>
     </section>
 
@@ -616,10 +590,10 @@
       <h2>Part 3 — Visual Anagrams</h2>
       <p class="summary">
         In the final part of the project, I implement the <em>Visual Anagrams</em> technique
-        (CVPR&nbsp;2024). The goal is to create a single image that looks like one subject when
-        upright, but reveals a completely different subject when flipped upside down.
-        This is achieved by denoising an image using two different prompts simultaneously:
-        one with the upright image, and another with a vertically flipped version of the same
+        (CVPR&nbsp;2024). The goal wwas to create a single image that looks like one subject when
+        upright, but something else when flipped upside down.
+        This is achieved by denoising an image using two different prompts simultaneously.
+        One with the upright image, and another with a vertically flipped version of the same
         noisy image. Their predicted noise estimates are averaged together at each diffusion
         step, producing an “ambiguous” image that resolves differently depending on orientation.
       </p>
@@ -641,7 +615,7 @@
 
         <figure class="card">
           <img src="./media/part_d/fire.png" alt="Visual anagram flipped (campfire)">
-          <figcaption>Flipped — Appears as a campfire scene.</figcaption>
+          <figcaption>Flipped — Appears as a campfire scene. (with silhouette behind)</figcaption>
         </figure>
       </div>
 
@@ -649,14 +623,11 @@
         The illusion works because the model learns to encode features supporting both prompts
         simultaneously. When upright, facial structure and lighting cues dominate, producing the
         impression of an old man. When the image is flipped, the same patterns reinterpret as a
-        campfire glow, figures, and surrounding scenery. This dual-interpretation property is a
+        campfire glow with rising smoke and the silhouette of a person in the background. This property is a
         direct result of averaging the two denoising paths during sampling.
       </p>
 
-      <p class="summary">
-        Although only one illusion is required for this project, the same method can be used
-        to create many other reversible images with different pairings of artistic prompts.
-      </p>
+      
     </section>
 
 
